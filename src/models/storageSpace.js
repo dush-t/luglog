@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 
 const storageSpaceSchema = new mongoose.Schema({
     name: {
@@ -24,3 +22,6 @@ const storageSpaceSchema = new mongoose.Schema({
     },
     
 })
+
+const StorageSpace = mongoose.model('StorageSpace', storageSpaceSchema);
+module.exports = StorageSpace;
