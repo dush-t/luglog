@@ -52,14 +52,13 @@ const userSchema = new mongoose.Schema({
         type: Boolean,
         required: true,
         default: false
-    }
+    },
+    bookings: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Booking'
+    }]
 })
 
-userSchema.virtuals('bookings', {
-    ref: 'Booking',
-    localField: '_id',
-    foreignField: 'consumer'
-});
 
 
 

@@ -20,7 +20,16 @@ const storageSpaceSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'City'
     },
-    
+    checkoutRequests: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Booking',
+    }]
+})
+
+storageSpaceSchema.virtual('bookings', {
+    ref: 'Booking',
+    localField: '_id',
+    foreignField: 'storageSpace'
 })
 
 const StorageSpace = mongoose.model('StorageSpace', storageSpaceSchema);
