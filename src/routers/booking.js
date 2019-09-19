@@ -4,7 +4,7 @@ const StorageSpace = require('../models/storageSpace');
 const Booking = require('../models/booking');
 
 const auth = require('../middleware/auth');
-const imageUpload = require('../utils/imageUpload');
+// const imageUpload = require('../utils/imageUpload');
 
 const router = new express.Router();
 
@@ -25,21 +25,26 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
     // Calculating the booking price.
     // Doing this here because this is temporary and I don't have a lot of time.
     const timeDelta = (booking.checkOutTime.getTime() - booking.checkInTime.getTime()) / 1000
-    const netStorageCost = (booking.costPerHour / 3600) * timeDelta;
+    const netStorageCost = ((booking.costPerHour / 3600) * timeDelta) * booking.numberOfBags;
     booking.netStorageCost = netStorageCost;
     await booking.save();
+
+    // Adding the booking to the user.
+    req.user.is_luggage_stored = true;
+    req.user.bookings.push(booking._id);
+    await req.user.save();
 
     return res.status(201).send(booking);
 })
 
 
-//UPLOAD IMAGES FOR BOOKING
-router.post('/api/bookings/:booking_id/uploadImages', auth, imageUpload.single('luggageItem'), async (req, res) => {
-    let booking = await Booking.findById(req.params.booking_id);
-    const buffer = await WaveShaperNode(req.file.buffer).resize({ width: 300, height: 300 }).png().toBuffer();
-    booking.luggageItems.push({ photo: buffer, totalStorageCost: 0 });
-    await booking.save()
-})
+// //UPLOAD IMAGES FOR BOOKING
+// router.post('/api/bookings/:booking_id/uploadImages', auth, imageUpload.single('luggageItem'), async (req, res) => {
+//     let booking = await Booking.findById(req.params.booking_id);
+//     const buffer = await WaveShaperNode(req.file.buffer).resize({ width: 300, height: 300 }).png().toBuffer();
+//     booking.luggageItems.push({ photo: buffer, totalStorageCost: 0 });
+//     await booking.save()
+// })
 
 
 module.exports = router;

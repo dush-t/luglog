@@ -41,7 +41,7 @@ const bookingSchema = new mongoose.Schema({
         default: Date.now,
         // required: true
     },
-    checkoutTime: {
+    checkOutTime: {
         type: Date,
         required: false
     },

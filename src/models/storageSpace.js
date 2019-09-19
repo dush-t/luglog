@@ -25,6 +25,11 @@ const storageSpaceSchema = new mongoose.Schema({
         type: Number,
         required: true,
         default: 100
+    },
+    open: {
+        type: Boolean,
+        required: true,
+        default: true
     }
 })
 

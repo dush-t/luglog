@@ -14,5 +14,5 @@ areaSchema.virtual('storageSpaces', {
 })
 
 
-const Area = mongoose.model('Area', citySchema);
+const Area = mongoose.model('Area', areaSchema);
 module.exports = Area;
