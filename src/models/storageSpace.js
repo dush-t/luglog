@@ -5,25 +5,27 @@ const storageSpaceSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    coordinates: {
-        cX: {
-            type: Number,
-        },
-        cY: {
-            type: Number
-        }
+    location: {
+        type: String,   // Google Maps location URL
+        required: false,
+        trim: true
     },
     avatar: {
         type: Buffer,
     },
-    city: {
+    area: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'City'
+        ref: 'Area'
     },
     checkoutRequests: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Booking',
-    }]
+    }],
+    costPerHour: {
+        type: Number,
+        required: true,
+        default: 100
+    }
 })
 
 storageSpaceSchema.virtual('bookings', {
@@ -31,6 +33,12 @@ storageSpaceSchema.virtual('bookings', {
     localField: '_id',
     foreignField: 'storageSpace'
 })
+
+storageSpaceSchema.methods.toJSON = function () {
+    const storageSpaceObject = this.toObject();
+    delete storageSpaceObject.checkoutRequests;
+    return storageSpaceObject;
+}
 
 const StorageSpace = mongoose.model('StorageSpace', storageSpaceSchema);
 module.exports = StorageSpace;

@@ -9,7 +9,7 @@ const router = new express.Router();
 
 
 router.post('/users', async (req, res) => {
-    const user = new user(req.body);
+    const user = new User(req.body);
 
     try {
         await user.save();
@@ -25,7 +25,7 @@ router.post('/users', async (req, res) => {
 
 router.post('/users/login', async (req, res) => {
     try {
-        const user = await user.findByCredentials(req.body.phoneNo, req.body.password);
+        const user = await User.findByCredentials(req.body.phone_number, req.body.password);
         const token = await user.generateAuthToken();
         res.send({ user: user, token: token });
     } catch (e) {
@@ -58,7 +58,7 @@ router.get('/users/me', auth, async (req, res) => {
 
 router.patch('/users/me', auth, async (req, res) => {
     const updates = Object.keys(req.body);
-    const allowedUpdates = ['password', 'avatar']
+    const allowedUpdates = ['password']
     const isValidOperation = updates.every((update) => {
         return allowedUpdates.includes(update);
     });
