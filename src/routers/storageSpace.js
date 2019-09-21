@@ -49,6 +49,7 @@ router.patch('/api/storageSpace/:space_id', auth, adminAccess, async (req, res) 
 
 router.get('/api/storageSpaces', async (req, res) => {
     const storageSpaces = StorageSpace.find({})
+    console.log(storageSpaces);
     res.status(200).send(storageSpaces);
 })
 
