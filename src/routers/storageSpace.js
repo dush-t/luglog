@@ -1,9 +1,14 @@
 const express = require('express');
+const sharp = require('sharp');
+
 const Area = require('../models/area');
 const StorageSpace = require('../models/storageSpace');
+const Image = require('../models/image');
 
 const auth = require('../middleware/auth');
 const adminAccess = require('../middleware/adminAccess');
+
+const imageUpload = require('../utils/imageUpload');
 
 const router = new express.Router();
 
@@ -22,6 +27,19 @@ router.post('/api/storageSpaces', auth, adminAccess, async (req, res) => {
         res.status(400).send(e);
     }
 })
+
+router.post('/api/storageSpace/:space_id/addImage', auth, adminAccess, imageUpload.single('storeImage'), async (req, res) => {
+    const storageSpace = await StorageSpace.findById(req.params.space_id);
+
+    const buffer = await sharp(req.file.buffer).png().toBuffer();
+    const image = new Image({ imageContent: buffer });
+    await image.save();
+
+    storageSpace.storeImages.push(image._id);
+    await storageSpace.save();
+    res.status(200).send(storageSpace);
+})
+
 
 router.patch('/api/storageSpace/:space_id', auth, adminAccess, async (req, res) => {
     const updates = Object.keys(req.body);

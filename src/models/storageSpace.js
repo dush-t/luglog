@@ -47,7 +47,11 @@ const storageSpaceSchema = new mongoose.Schema({
         type: Boolean,
         required: true,
         default: true
-    }
+    },
+    storeImages: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Image'
+    }]
 })
 
 storageSpaceSchema.virtual('bookings', {

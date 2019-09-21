@@ -7,6 +7,7 @@ const userRouter = require('./routers/user');
 const storageSpaceRouter = require('./routers/storageSpace');
 const bookingRouter = require('./routers/booking');
 const areaRouter = require('./routers/area');
+const imageRouter = require('./routers/image');
 
 const app = express();
 
@@ -23,5 +24,6 @@ app.use(userRouter);
 app.use(areaRouter);
 app.use(storageSpaceRouter);
 app.use(bookingRouter);
+app.use(imageRouter);
 
 module.exports = app;
