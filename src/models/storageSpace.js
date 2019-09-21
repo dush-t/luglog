@@ -42,6 +42,11 @@ const storageSpaceSchema = new mongoose.Schema({
     },
     type: {
         type: String
+    },
+    hasCCTV: {
+        type: Boolean,
+        required: true,
+        default: true
     }
 })
 

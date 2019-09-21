@@ -25,7 +25,7 @@ router.post('/api/storageSpaces', auth, adminAccess, async (req, res) => {
 
 router.patch('/api/storageSpace/:space_id', auth, adminAccess, async (req, res) => {
     const updates = Object.keys(req.body);
-    const allowedUpdates = ['name', 'location', 'costPerHour', 'open', 'type', 'rating']
+    const allowedUpdates = ['name', 'location', 'costPerHour', 'open', 'type', 'rating', 'hasCCTV']
     const isValidOperation = updates.every((update) => {
         return allowedUpdates.includes(update);
     });
