@@ -10,6 +10,10 @@ const storageSpaceSchema = new mongoose.Schema({
         required: false,
         trim: true
     },
+    email: {
+        type: String,
+        trim: true
+    },
     avatar: {
         type: Buffer,
     },
@@ -30,6 +34,14 @@ const storageSpaceSchema = new mongoose.Schema({
         type: Boolean,
         required: true,
         default: true
+    },
+    rating: {
+        type: Number,
+        required: true,
+        default: 3
+    },
+    type: {
+        type: String
     }
 })
 

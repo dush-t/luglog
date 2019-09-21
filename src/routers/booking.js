@@ -3,6 +3,8 @@ const sharp = require('sharp');
 const StorageSpace = require('../models/storageSpace');
 const Booking = require('../models/booking');
 
+const { sendBookingEmailToSpace, sendBookingEmailToUser } = require('../utils/email');
+
 const auth = require('../middleware/auth');
 // const imageUpload = require('../utils/imageUpload');
 
@@ -33,6 +35,9 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
     req.user.is_luggage_stored = true;
     req.user.bookings.push(booking._id);
     await req.user.save();
+
+    sendBookingEmailToSpace(storageSpace.email, storageSpace.name);
+    sendBookingEmailToUser(req.user.email, req.user.name, storageSpace.name);
 
     return res.status(201).send(booking);
 })

@@ -11,6 +11,26 @@ const sendWelcomeEmail = (email, name) => {
     })
 }
 
+const sendBookingEmailToSpace = (email, name) => {
+    sgMail.send({
+        to: email,
+        from: 'goluggagefree@gmail.com',
+        subject: "Booking recieved",
+        text: "I'm just testing stuff out right now, will figure out the content of this mail later"
+    })
+}
+
+const sendBookingEmailToUser = (email, name, vendorName) => {
+    sgMail.send({
+        to: email,
+        from: 'goluggagefree@gmail.com',
+        subject: "Your booking was successful",
+        text: `Hey ${name}, your booking at ${vendorName} was successful! You were supposed to get information in this email but you didn't because this is a test`
+    })
+}
+
 module.exports = {
-    sendWelcomeEmail
+    sendWelcomeEmail,
+    sendBookingEmailToSpace,
+    sendBookingEmailToUser
 }
