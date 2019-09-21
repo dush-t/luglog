@@ -50,7 +50,7 @@ router.patch('/api/storageSpace/:space_id', auth, adminAccess, async (req, res) 
 router.get('/api/storageSpaces', async (req, res) => {
     const storageSpaces = await StorageSpace.find({})
     console.log(storageSpaces);
-    storageSpaces.populate('area').execPopulate();
+    await storageSpaces.populate('area').execPopulate();
     res.status(200).send(storageSpaces);
 })
 
