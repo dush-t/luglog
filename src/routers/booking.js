@@ -43,6 +43,15 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
 })
 
 
+router.get('/api/bookings', auth, async (req, res) => {
+    await req.user.populate({
+        path: 'bookings',
+        populate: { path: 'storageSpace', select: 'name type address'}
+    })
+    res.status(200).send(req.user.bookings);
+})
+
+
 // //UPLOAD IMAGES FOR BOOKING
 // router.post('/api/bookings/:booking_id/uploadImages', auth, imageUpload.single('luggageItem'), async (req, res) => {
 //     let booking = await Booking.findById(req.params.booking_id);
