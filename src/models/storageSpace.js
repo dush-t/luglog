@@ -51,7 +51,31 @@ const storageSpaceSchema = new mongoose.Schema({
     storeImages: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Image'
-    }]
+    }],
+    address: {
+        type: String,
+        default: "address1"
+    },
+    ownerName: {
+        type: String,
+        default: "Mr_Dush__T"
+    },
+    ownerDetail: {
+        type: String,
+        default: "Mr_Dush__T was my xbox-live gamertag way back when I was in class 8"
+    },
+    openingTime: {
+        type: String,
+        default: "10 AM"
+    },
+    closingTime: {
+        type: String,
+        default: "10 PM"
+    },
+    ownerImage: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Image"
+    }
 })
 
 storageSpaceSchema.virtual('bookings', {
