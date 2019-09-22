@@ -18,7 +18,7 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
     
     booking.storageSpace = storageSpace._id;
     booking.consumer = req.user._id;
-    booking.checkInTime = new Date();
+    booking.checkInTime = new Date(req.body.checkInTime.toString());
     booking.checkOutTime = new Date(req.body.checkOutTime.toString())   // req.body.checkOutTime needs to be an ISO 8601 date string.
     booking.costPerHour = storageSpace.costPerHour;
     booking.numberOfBags = parseInt(req.body.numberOfBags);
