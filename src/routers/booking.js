@@ -50,7 +50,8 @@ router.get('/api/bookings', auth, async (req, res) => {
         model: 'Booking',
         populate: {
             path: 'storageSpace',
-            model: 'StorageSpace'
+            model: 'StorageSpace',
+            select: 'name type address'
         }
     })
     res.status(200).send(user.bookings);
