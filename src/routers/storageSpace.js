@@ -43,7 +43,7 @@ router.post('/api/storageSpace/:space_id/addImage', auth, adminAccess, imageUplo
 
 router.patch('/api/storageSpace/:space_id', auth, adminAccess, async (req, res) => {
     const updates = Object.keys(req.body);
-    const allowedUpdates = ['name', 'location', 'costPerHour', 'open', 'type', 'rating', 'hasCCTV', 'address', 'ownerName', 'ownerDetail', 'openingTime', 'closingTime']
+    const allowedUpdates = ['name', 'location', 'costPerHour', 'open', 'type', 'rating', 'hasCCTV', 'address', 'ownerName', 'ownerDetail', 'openingTime', 'closingTime', "number"]
     const isValidOperation = updates.every((update) => {
         return allowedUpdates.includes(update);
     });
