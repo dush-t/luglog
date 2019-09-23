@@ -53,7 +53,8 @@ router.get('/api/bookings', auth, async (req, res) => {
             model: 'StorageSpace'
         }
     })
-    res.status(200).send(user.bookings)
+    res.status(200).send(user.bookings);
+})
 
 
 // //UPLOAD IMAGES FOR BOOKING
