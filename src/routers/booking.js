@@ -2,6 +2,7 @@ const express = require('express');
 const sharp = require('sharp');
 const StorageSpace = require('../models/storageSpace');
 const Booking = require('../models/booking');
+const User = require('../models/user');
 
 const { sendBookingEmailToSpace, sendBookingEmailToUser } = require('../utils/email');
 
