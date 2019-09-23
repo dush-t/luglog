@@ -44,8 +44,7 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
 
 
 router.get('/api/bookings', auth, async (req, res) => {
-    const user = req.user;
-    await user.populate({
+    const user = await User.findById(req.user._id).populate({       // I'm ashamed of this.
         path: 'bookings',
         model: 'Booking',
         populate: {
