@@ -5,6 +5,7 @@ const Booking = require('../models/booking');
 const User = require('../models/user');
 
 const { sendBookingEmailToSpace, sendBookingEmailToUser } = require('../utils/email');
+const { sendSMS } = require('../utils/sms')
 
 const auth = require('../middleware/auth');
 // const imageUpload = require('../utils/imageUpload');
@@ -36,6 +37,10 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
     req.user.is_luggage_stored = true;
     req.user.bookings.push(booking._id);
     await req.user.save();
+
+    const smsBody = `You have a new booking from ${req.user.name}. The number of bags is ${booking.numberOfBags} and the booking is for ${timeDelta/(60*60*24)} days. Booking ID: ${booking._id}`
+
+    sendSMS(storageSpace.number, smsBody);
 
     sendBookingEmailToSpace(storageSpace.email, storageSpace.name);
     sendBookingEmailToUser(req.user.email, req.user.name, storageSpace.name);

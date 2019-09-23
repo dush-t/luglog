@@ -14,6 +14,11 @@ const storageSpaceSchema = new mongoose.Schema({
         type: String,
         trim: true
     },
+    number: {
+        type: String,
+        required: true,
+        default: 6969696969
+    },
     avatar: {
         type: Buffer,
     },
