@@ -44,9 +44,14 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
 
 
 router.get('/api/bookings', auth, async (req, res) => {
-    const bookings = await req.user.populate({
+    const user = req.user;
+    await user.populate({
         path: 'bookings',
-        populate: { path: 'storageSpace' }
+        model: 'Booking',
+        populate: {
+            path: 'storageSpace',
+            model: 'StorageSpace'
+        }
     })
     res.status(200).send(bookings);
 })
