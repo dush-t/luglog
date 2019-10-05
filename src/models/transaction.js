@@ -53,7 +53,7 @@ transactionSchema.virtual('booking', {
 
 //I do not like the callback pattern. Wanna change this later.
 transactionSchema.methods.generateChecksum = (callback) => {
-    const paramsJSON = JSON.parse(this.paytmParams)
+    const paramsJSON = JSON.parse(this.paytmParams.toString())
     const data = paytmParamsStringify(paramsJSON);
     crypt.gen_salt(4, (err, salt) => {
         const sha256 = crypto.createHash('sha256').update(data + salt).digest('hex');
