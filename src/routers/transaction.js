@@ -17,21 +17,44 @@ router.post('/api/payFor/:booking_id', auth, async (req, res) => {
 
     const receiptId = generateRazorpayRecieptId(req.user.mobile_number);
 
+    // Creating razorpay order
     const options = {
-        amount: booking.netStorageCost,
+        amount: booking.netStorageCost * 100,
         currency: "INR",
         receipt: receiptId,
         payment_capture: 0
     }
-
     var instance = new Razorpay({
         key_id: process.env.RAZORPAY_ID,
         key_secret: process.env.RAZORPAY_SECRET
     })
-    instance.orders.create(options, function(err, order) {
+    instance.orders.create(options, async function (err, order) {
         console.log(order);
-        console.log(err);
-        res.send(order);
+        console.log(err);        
+        const transaction = new Transaction({
+            amount: booking.netStorageCost,
+            user: req.user._id,
+            razorpayOrderId: order.id,
+            razorpayReceiptId: order.receipt,
+            razorpayOrderJSON: JSON.stringify(order)
+        });
+        await transaction.save();
+        booking.transaction = transaction._id;
+        await booking.save();
+
+        const data = {
+            key_id: process.env.RAZORPAY_ID,
+            name: 'GoLuggageFree',
+            description: 'Cloakrooms near you',
+            image: '',
+            order_id: order.id,
+            prefillName: req.user.name,
+            prefillEmail: req.user.email,
+            prefillContact: req.user.contact,
+            callback_url: `https://luglog.herokuapp.com/api/confirmPayment/${transaction._id}`
+        }
+
+        res.status(201).send(data);
     });
 });
 

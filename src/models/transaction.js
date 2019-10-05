@@ -20,28 +20,37 @@ const transactionSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    paytmOrderId: {
+    // paytmOrderId: {
+    //     type: String
+    // },
+    // paytmTransactionId: {
+    //     type: String
+    // },
+    // paytmBankTransactionId: {
+    //     type: String
+    // },
+    // paymentGateway: {
+    //     type: String
+    // },
+    // bankName: {
+    //     type: String
+    // },
+    // paytmResponseCode: {
+    //     type: String
+    // },
+    // paytmResponseMessage: {
+    //     type: String
+    // },
+    // paytmParams: {
+    //     type: String
+    // }
+    razorpayOrderId: {
         type: String
     },
-    paytmTransactionId: {
+    razorpayReceiptId: {
         type: String
     },
-    paytmBankTransactionId: {
-        type: String
-    },
-    paymentGateway: {
-        type: String
-    },
-    bankName: {
-        type: String
-    },
-    paytmResponseCode: {
-        type: String
-    },
-    paytmResponseMessage: {
-        type: String
-    },
-    paytmParams: {
+    razorPayOrderJSON: {
         type: String
     }
 })
