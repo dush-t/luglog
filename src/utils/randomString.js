@@ -18,10 +18,10 @@ const generatePaytmOrderId = (phoneNumber) => {
 
 const generateRazorpayRecieptId = (phoneNumber) => {
     let orderId = phoneNumber.toString() + '_';
-    for (i = 0; i < 7; i++) {
+    for (i = 0; i < 2; i++) {
         orderId += Math.random().toString(36).substring(2, 15);
     }
-    orderId = orderId.substring(0, 50);
+    orderId = orderId.substring(0, 20);
     return orderId;
 }
 
