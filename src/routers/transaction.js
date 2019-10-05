@@ -47,7 +47,7 @@ router.post('/api/payFor/:booking_id', auth, async (req, res) => {
 
 
 // Paytm will send info to this endpoint on transaction completion
-router.post('/api/confirmPayment/', async (req, res) => {
+router.post('/api/confirmPayment', async (req, res) => {
     const transaction = await Transaction.findOne({ paytmOrderId: req.body.ORDERID });
 
     checksumHash = req.body.CHECKSUMHASH;
