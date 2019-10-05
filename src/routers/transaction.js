@@ -62,8 +62,14 @@ router.post('/api/payFor/:booking_id', auth, async (req, res) => {
 // Paytm will send info to this endpoint on transaction completion
 router.post('/api/confirmPayment/:transaction_id', async (req, res) => {
     const transaction = await Transaction.findById(req.params.transaction_id);
+    var instance = new Razorpay({
+        key_id: process.env.RAZORPAY_ID,
+        key_secret: process.env.RAZORPAY_SECRET
+    })
+    
+    const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
 
-    if (transaction.hasValidSignature()) {
+    if (transaction.hasValidSignature(razorpay_payment_id, razorpay_order_id, razorpay_signature)) {
         transaction.status = 'COMPLETE';
         await transaction.save();
         console.log(transaction);
