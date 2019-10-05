@@ -30,6 +30,7 @@ router.post('/api/payFor/:booking_id', auth, async (req, res) => {
     })
     instance.orders.create(options, function(err, order) {
         console.log(order);
+        console.log(err);
         res.send(order);
     });
 });
