@@ -2,52 +2,36 @@ const express = require('express');
 const Booking = require('../models/booking');
 const Transaction = require('../models/transaction');
 const checksum = require('../utils/checksum');
+const axios = require('axios');
+const Razorpay = require('razorpay');
 
 const auth = require('../middleware/auth');
 
-const { generatePaytmOrderId } = require('../utils/randomString');
+const { generateRazorpayRecieptId } = require('../utils/randomString');
 
 
 const router = new express.Router()
 
 router.post('/api/payFor/:booking_id', auth, async (req, res) => {
     const booking = await Booking.findById(req.params.booking_id);
-    const orderId = generatePaytmOrderId(req.user.mobile_number);
 
-    const paytmTransactionParams = {
-        MID: process.env.PAYTM_MID,
-        ORDER_ID: orderId,
-        CUST_ID: req.user.unique_id,
-        TXN_AMOUNT: booking.netStorageCost.toFixed(2),
-        CHANNEL_ID: 'WAP',      // Render the payment page which is suitable for mobile devices only.
-        WEBSITE: 'WEBSTAGING',
-        INDUSTRY_TYPE_ID: 'Retail',
-        CALLBACK_URL: process.env.PAYTM_CALLBACK_URL
+    const receiptId = generateRazorpayRecieptId(req.user.mobile_number);
+
+    const options = {
+        amount: booking.netStorageCost,
+        currency: "INR",
+        receipt: receiptId,
+        payment_capture: 0
     }
 
-    const transaction = new Transaction({
-        amount: booking.netStorageCost,
-        user: req.user._id,
-        paytmParams: JSON.stringify(paytmTransactionParams),
-        paytmOrderId: 'A'
+    var instance = new Razorpay({
+        key_id: process.env.RAZORPAY_ID,
+        key_secret: process.env.RAZORPAY_SECRET
     })
-
-    await transaction.save();   // Am I making redundant save calls?
-    console.log('transaction saved')
-
-    checksum.genchecksum(paytmTransactionParams, process.env.PAYTM_DEVKEY, (err, checksum) => {
-        paytmTransactionParams['CHECKSUMHASH'] = checksum;
-    })
-    // transaction.generateChecksum(async (err, encryptedHash) => {
-    //     paytmTransactionParams.CHECKSUMHASH = encryptedHash;
-    //     transaction.paytmParams = JSON.stringify(paytmTransactionParams);
-    //     await transaction.save()
-    // })
-
-    booking.transaction = transaction._id;
-    await booking.save();
-
-    res.status(201).send(paytmTransactionParams);
+    instance.orders.create(options, function(err, order) {
+        console.log(order);
+        res.send(order);
+    });
 });
 
 

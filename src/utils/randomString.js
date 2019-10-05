@@ -16,7 +16,17 @@ const generatePaytmOrderId = (phoneNumber) => {
     return orderId;
 }
 
+const generateRazorpayRecieptId = (phoneNumber) => {
+    let orderId = phoneNumber.toString() + '_';
+    for (i = 0; i < 7; i++) {
+        orderId += Math.random().toString(36).substring(2, 15);
+    }
+    orderId = orderId.substring(0, 50);
+    return orderId;
+}
+
 module.exports = {
     generateUUID,
-    generatePaytmOrderId
+    generatePaytmOrderId,
+    generateRazorpayRecieptId
 }
