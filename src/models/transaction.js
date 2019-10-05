@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const paytmParamsStringify = require('../utils/paytmParamsStringify');
 const crypt = require('../utils/crypt');
+const crypto = require('crypto')
 
 const transactionSchema = new mongoose.Schema({
     status: {
