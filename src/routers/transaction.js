@@ -1,6 +1,7 @@
 const express = require('express');
 const Booking = require('../models/booking');
 const Transaction = require('../models/transaction');
+const checksum = require('../utils/checksum');
 
 const auth = require('../middleware/auth');
 
@@ -21,8 +22,7 @@ router.post('/api/payFor/:booking_id', auth, async (req, res) => {
         CHANNEL_ID: 'WAP',      // Render the payment page which is suitable for mobile devices only.
         WEBSITE: 'WEBSTAGING',
         INDUSTRY_TYPE_ID: 'Retail',
-        CALLBACK_URL: process.env.PAYTM_CALLBACK_URL,
-        CHECKSUMHASH: ''
+        CALLBACK_URL: process.env.PAYTM_CALLBACK_URL
     }
 
     const transaction = new Transaction({
@@ -35,11 +35,14 @@ router.post('/api/payFor/:booking_id', auth, async (req, res) => {
     await transaction.save();   // Am I making redundant save calls?
     console.log('transaction saved')
 
-    transaction.generateChecksum(async (err, encryptedHash) => {
-        paytmTransactionParams.CHECKSUMHASH = encryptedHash;
-        transaction.paytmParams = JSON.stringify(paytmTransactionParams);
-        await transaction.save()
+    checksum.genchecksum(paytmTransactionParams, process.env.PAYTM_DEVKEY, (err, checksum) => {
+        paytmTransactionParams['CHECKSUMHASH'] = checksum;
     })
+    // transaction.generateChecksum(async (err, encryptedHash) => {
+    //     paytmTransactionParams.CHECKSUMHASH = encryptedHash;
+    //     transaction.paytmParams = JSON.stringify(paytmTransactionParams);
+    //     await transaction.save()
+    // })
 
     booking.transaction = transaction._id;
     await booking.save();
