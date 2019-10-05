@@ -32,6 +32,7 @@ router.post('/api/payFor/:booking_id', auth, async (req, res) => {
     })
 
     await transaction.save();   // Am I making redundant save calls?
+    console.log('transaction saved')
 
     transaction.generateChecksum(async (err, encryptedHash) => {
         paytmTransactionParams.CHECKSUMHASH = encryptedHash;
