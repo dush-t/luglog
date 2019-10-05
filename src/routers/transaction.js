@@ -21,7 +21,8 @@ router.post('/api/payFor/:booking_id', auth, async (req, res) => {
         CHANNEL_ID: 'WAP',      // Render the payment page which is suitable for mobile devices only.
         WEBSITE: 'WEBSTAGING',
         INDUSTRY_TYPE_ID: 'Retail',
-        CALLBACK_URL: process.env.PAYTM_CALLBACK_URL
+        CALLBACK_URL: process.env.PAYTM_CALLBACK_URL,
+        CHECKSUMHASH: ''
     }
 
     const transaction = new Transaction({
