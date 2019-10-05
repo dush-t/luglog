@@ -50,7 +50,7 @@ router.post('/api/payFor/:booking_id', auth, async (req, res) => {
             order_id: order.id,
             prefillName: req.user.name,
             prefillEmail: req.user.email,
-            prefillContact: req.user.contact,
+            prefillContact: req.user.mobile_number,
             callback_url: `https://luglog.herokuapp.com/api/confirmPayment/${transaction._id}`
         }
 
