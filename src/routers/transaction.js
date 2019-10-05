@@ -60,25 +60,16 @@ router.post('/api/payFor/:booking_id', auth, async (req, res) => {
 
 
 // Paytm will send info to this endpoint on transaction completion
-router.post('/api/confirmPayment', async (req, res) => {
-    const transaction = await Transaction.findOne({ paytmOrderId: req.body.ORDERID });
+router.post('/api/confirmPayment/:transaction_id', async (req, res) => {
+    const transaction = await Transaction.findById(req.params.transaction_id);
 
-    checksumHash = req.body.CHECKSUMHASH;
-    if (transaction.verifyChecksum()) {
-        transaction.status = req.body.STATUS;
-        transaction.paytmTransactionId = req.body.TXNID;
-        transaction.paytmBankTransactionId = req.body.BANKTXNID;
-        transaction.paymentGateway = req.body.GATEWAYNAME;
-        transaction.bankName = req.body.BANKNAME || 'UPI-payment';
-        transaction.paytmResponseCode = req.body.RESPCODE;
-        transaction.paytmResponseMessage = req.body.RESPMSG;
+    if (transaction.hasValidSignature()) {
+        transaction.status = 'COMPLETE';
         await transaction.save();
-
-        // Do socket related shit here.
-        return res.status(200).send();
+        console.log(transaction);
+        return res.status(200).send(transaction);
     } else {
-        console.log(req.body);
-        return res.status(500).send();
+        return res.status(400).send();
     }
 })
 

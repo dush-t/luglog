@@ -52,6 +52,9 @@ const transactionSchema = new mongoose.Schema({
     },
     razorPayOrderJSON: {
         type: String
+    },
+    razorpayPaymentId: {
+        type: String
     }
 })
 
@@ -95,6 +98,19 @@ transactionSchema.methods.verifyChecksum = function () {
         }
     } else {
         // No checksum in params.
+        return false;
+    }
+}
+
+transactionSchema.methods.hasValidSignature = function (rpayOrderId, rpayPaymentId, rpay_signature) {
+    const hmac = crypto.createHmac('sha256', process.env.RAZORPAY_SECRET);
+
+    hmac.update(rpayOrderId + "|" + rpayPaymentId);
+    let generatedSignature = hmac.digest('hex');
+
+    if (generatedSignature === rpay_signature) {
+        return true;
+    } else {
         return false;
     }
 }
