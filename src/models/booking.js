@@ -54,6 +54,10 @@ const bookingSchema = new mongoose.Schema({
         type: Number,
         required: true,
         default: 1
+    },
+    transaction: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'transaction'
     }
 }, {
     timestamps: true,

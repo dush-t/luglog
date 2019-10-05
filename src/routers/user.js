@@ -6,12 +6,14 @@ const User = require('../models/user');
 
 const auth = require('../middleware/auth');
 const {sendWelcomeEmail} = require('../utils/email');
+const {generateUUID} = require('../utils/randomString');
 
 const router = new express.Router();
 
 
 router.post('/users', async (req, res) => {
     const user = new User(req.body);
+    user.uniqueId = generateUUID(req.body.mobile_number);
 
     try {
         await user.save();

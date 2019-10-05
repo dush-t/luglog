@@ -30,6 +30,9 @@ const userSchema = new mongoose.Schema({
             }
         }
     },
+    uniqueId: {
+        type: String
+    },
     password: {
         type: String,
         required: true,
