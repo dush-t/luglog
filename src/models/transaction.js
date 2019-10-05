@@ -52,7 +52,7 @@ transactionSchema.virtual('booking', {
 })
 
 //I do not like the callback pattern. Wanna change this later.
-transactionSchema.methods.generateChecksum = (callback) => {
+transactionSchema.methods.generateChecksum = function () {
     console.log(this.paytmParams);
     const paramsJSON = JSON.parse(this.paytmParams.toString())
     const data = paytmParamsStringify(paramsJSON);
@@ -64,7 +64,7 @@ transactionSchema.methods.generateChecksum = (callback) => {
     })
 }
 
-transactionSchema.methods.verifyChecksum = () => {
+transactionSchema.methods.verifyChecksum = function () {
     const params = JSON.stringify(this.paytmParams);
     const data = paytmParamsStringify(params);
     if (params.CHECKSUMHASH) {
