@@ -1,6 +1,7 @@
 // index.js creates the express server and runs it.
 
 const express = require('express');
+const bodyParser = require('body-parser');
 require('./db/mongoose'); // calling require will ensure that the file runs.
 
 const userRouter = require('./routers/user');
