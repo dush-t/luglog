@@ -2,6 +2,8 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const multer = require('multer');
+const upload = multer();
 require('./db/mongoose'); // calling require will ensure that the file runs.
 
 const userRouter = require('./routers/user');
