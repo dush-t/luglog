@@ -18,7 +18,10 @@ const loggerMiddleware = (req, res, next) => {
     next();
 }
 
-app.use(express.json()) // ask express to automatically parse incoming json.
+app.use(express.json()); // ask express to automatically parse incoming json.
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(upload.array()); 
+
 app.use(loggerMiddleware);
 
 app.use(userRouter);
