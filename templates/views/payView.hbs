@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+
+<html>
+<form method="POST" action="https://api.razorpay.com/v1/checkout/embedded">
+    <input type="hidden" name="key_id" value="{{key_id}}">
+    <input type="hidden" name="order_id" value="{{order_id}}">
+    <input type="hidden" name="name" value="GoLuggageFree">
+    <input type="hidden" name="description" value="A Wild Sheep Chase">
+    <input type="hidden" name="image" value="https://cdn.razorpay.com/logos/BUVwvgaqVByGp2_large.png">
+    <input type="hidden" name="prefill[name]" value="{{user_name}}">
+    <input type="hidden" name="prefill[contact]" value="{{user_number}}">
+    <input type="hidden" name="prefill[email]" value="{{user_email}}">
+    <input type="hidden" name="callback_url"
+        value="https://luglog.herokuapp.com/api/confirmPayment/5d985ff4b52a570017e90cd3">
+    <input type="hidden" name="cancel_url" value="https://example.com/payment-cancel">
+    <button>Submit</button>
+</form>
+
+</html>

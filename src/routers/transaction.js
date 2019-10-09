@@ -4,6 +4,9 @@ const Transaction = require('../models/transaction');
 const checksum = require('../utils/checksum');
 const axios = require('axios');
 const Razorpay = require('razorpay');
+const path = require('path');
+const hbs = require('hbs')
+
 
 const auth = require('../middleware/auth');
 
@@ -82,5 +85,15 @@ router.post('/api/confirmPayment/:transaction_id', async (req, res) => {
     }
 })
 
+router.get('/initiatePayment/:transaction_id', (req, res) => {
+    const transaction = await Transaction.findById(req.params.transaction_id).populate('user').execPopulate()
+    res.render('payView', {
+        'key_id': process.env.RAZORPAY_ID,
+        'order_id': transaction.razorpayOrderId,
+        'user_name': transaction.user.name,
+        'user_number': transaction.user.mobile_number,
+        'user_email': transaction.user.email
+    });
+})
 
 module.exports = router;
