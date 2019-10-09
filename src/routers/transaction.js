@@ -86,7 +86,10 @@ router.post('/api/confirmPayment/:transaction_id', async (req, res) => {
 })
 
 router.get('/initiatePayment/:transaction_id', async (req, res) => {
-    const transaction = await Transaction.findById(req.params.transaction_id).populate('user').execPopulate()
+    const transaction = await Transaction.findById(req.params.transaction_id).populate({
+        'path': 'user',
+        'models': 'User'
+    })
     res.render('payView', {
         'key_id': process.env.RAZORPAY_ID,
         'order_id': transaction.razorpayOrderId,
