@@ -46,6 +46,7 @@ router.post('/api/payFor/:booking_id', auth, async (req, res) => {
         await booking.save();
 
         const data = {
+            transaction_id: transaction._id,
             key_id: process.env.RAZORPAY_ID,
             name: 'GoLuggageFree',
             description: 'Cloakrooms near you',
