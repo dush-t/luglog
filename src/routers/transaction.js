@@ -19,7 +19,7 @@ router.post('/api/payFor/:booking_id', auth, async (req, res) => {
 
     // Creating razorpay order
     const options = {
-        amount: booking.netStorageCost * 100,
+        amount: Math.round(booking.netStorageCost * 100),
         currency: "INR",
         receipt: receiptId,
         payment_capture: 0
@@ -32,7 +32,7 @@ router.post('/api/payFor/:booking_id', auth, async (req, res) => {
         console.log(order);
         console.log(err);        
         const transaction = new Transaction({
-            amount: booking.netStorageCost,
+            amount: Math.round(booking.netStorageCost),
             user: req.user._id,
             razorpayOrderId: order.id,
             razorpayReceiptId: order.receipt,
