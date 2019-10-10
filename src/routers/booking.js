@@ -50,20 +50,25 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
 
 
 router.get('/api/bookings', auth, async (req, res) => {
-    const user = req.user
-    const bookings = user.bookings;
-    await bookings.populate({       // I'm ashamed of this.
-        path: 'storageSpace',
-        model: 'StorageSpace',
-        select: 'name type address',
-        populate: {
-            path: 'area',
-            model: 'Area'
-        }
-    }).populate({
-        path: 'consumer',
-        model: 'User',
-        select: 'name'
+    const user = await User.findById(req.user._id).populate({       // I'm ashamed of this.
+        path: 'bookings',
+        model: 'Booking',
+        populate: [
+            {
+                path: 'storageSpace',
+                model: 'StorageSpace',
+                select: 'name type address',
+                populate: {
+                    path: 'area',
+                    model: 'Area'
+                }
+            },
+            {
+                path: 'consumer',
+                model: 'User',
+                select: 'name'
+            }
+        ]
     })
     res.status(200).send(user.bookings);
 })
