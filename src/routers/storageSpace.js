@@ -46,6 +46,7 @@ router.post('/api/storageSpaces', auth, adminAccess, async (req, res) => {
 })
 
 router.post('/api/storageSpace/:space_id/addImage', auth, adminAccess, upload.single('image'), async (req, res) => {
+    console.log(req)
     try {
         const storageSpace = await StorageSpace.findById(req.params.space_id);
     
