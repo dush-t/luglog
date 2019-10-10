@@ -81,9 +81,10 @@ router.post('/api/confirmPayment/:transaction_id', async (req, res) => {
         await transaction.save();
         console.log(transaction);
         // return res.status(200).send(transaction);
-        res.render('paymentSuccessful', {});
+        res.render('paymentSuccessful', {title: 'SUCCESS'});
     } else {
-        return res.status(400).send();
+        // return res.status(400).send();
+        res.render('paymentSuccessful' {title: 'FAILURE'});
     }
 })
 
