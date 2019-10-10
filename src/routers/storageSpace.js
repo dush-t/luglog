@@ -11,7 +11,7 @@ const adminAccess = require('../middleware/adminAccess');
 const multer = require('multer');
 
 
-const imageUpload = multer({                 // No dest parameter provided because we
+const upload = multer({                 // No dest parameter provided because we
     limits: {                           // do not want to save the image in the 
         fileSize: 1000000               // filesystem. We wanna access the binary
     },                                  // data in the router function.
@@ -45,7 +45,7 @@ router.post('/api/storageSpaces', auth, adminAccess, async (req, res) => {
     }
 })
 
-router.post('/api/storageSpace/:space_id/addImage', auth, adminAccess, imageUpload.single('storeImage'), async (req, res) => {
+router.post('/api/storageSpace/:space_id/addImage', auth, adminAccess, upload.single('storeImage'), async (req, res) => {
     const storageSpace = await StorageSpace.findById(req.params.space_id);
 
     const buffer = await sharp(req.file.buffer).png().toBuffer();
@@ -57,7 +57,7 @@ router.post('/api/storageSpace/:space_id/addImage', auth, adminAccess, imageUplo
     res.status(200).send(storageSpace);
 })
 
-router.post('/api/storageSpace/:space_id/uploadOwnerImage', auth, adminAccess, imageUpload.single('ownerImage'), async (req, res) => {
+router.post('/api/storageSpace/:space_id/uploadOwnerImage', auth, adminAccess, upload.single('ownerImage'), async (req, res) => {
     const storageSpace = await StorageSpace.findById(req.params.space_id);
 
     const buffer = await sharp(req.file.buffer).png().toBuffer();
