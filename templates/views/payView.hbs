@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <html>
-<form method="POST" action="https://api.razorpay.com/v1/checkout/embedded">
+<form method="POST" action="https://api.razorpay.com/v1/checkout/embedded" name="rzrpayform">
     <input type="hidden" name="key_id" value="{{key_id}}">
     <input type="hidden" name="order_id" value="{{order_id}}">
     <input type="hidden" name="name" value="GoLuggageFree">
@@ -14,6 +14,9 @@
         value="https://luglog.herokuapp.com/api/confirmPayment/5d985ff4b52a570017e90cd3">
     <input type="hidden" name="cancel_url" value="https://example.com/payment-cancel">
     <button>Submit</button>
+    <script type="text/javascript">
+        document.rzrpayform.submit()
+    </script>
 </form>
 
 </html>
