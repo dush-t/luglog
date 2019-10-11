@@ -25,8 +25,22 @@ const generateRazorpayRecieptId = (phoneNumber) => {
     return orderId;
 }
 
+const generateBookingId = () => {
+    let bookingId = '';
+    for (i = 0; i < 2; i++) {
+        bookingId += Math.random().toString(36).substring(2,8)
+    }
+    return bookingId;
+}
+
+const generateRandomInt = (min, max) => {
+    return Math.round(Math.random() * (max - min) + min);
+}
+
 module.exports = {
     generateUUID,
     generatePaytmOrderId,
-    generateRazorpayRecieptId
+    generateRazorpayRecieptId,
+    generateBookingId,
+    generateRandomInt
 }

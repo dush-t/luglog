@@ -5,8 +5,10 @@ const sharp = require('sharp');
 const User = require('../models/user');
 
 const auth = require('../middleware/auth');
+
 const {sendWelcomeEmail} = require('../utils/email');
-const {generateUUID} = require('../utils/randomString');
+const {sendSMS} = require('../utils/sms');
+const {generateUUID, generateRandomInt} = require('../utils/randomString');
 
 const router = new express.Router();
 
@@ -53,6 +55,39 @@ router.post('/users/logout', auth, async (req, res) => {
     }
 });
 
+
+router.post('/users/verifyNumber', async (req, res) => {
+    const otp = req.body.otp
+    const number = req.body.number
+    sendSMS(number.toString(), `OTP: ${otp}`);
+})
+
+router.post('/users/forgotPasswordOTP', async (req, res) => {
+    const number = req.body.number;
+    const OTP = generateRandomInt(10001, 99999);
+    const user = await User.findOne({ mobile_number: parseInt(number) });
+    user.forgotPasswordOTP = OTP;
+    await user.save();
+    sendSMS(number.toString(), `OTP to reset password: ${OTP}`);
+    return res.send({'message': 'OTP sent to mobile number of user'});
+})
+
+router.post('/users/resetPassword', async (req, res) => {
+    const otp = req.body.otp;
+    const number = req.body.number;
+    const password = req.body.password;
+    const user = await User.findOne({ mobile_number: parseInt(number) });
+    
+    if (user.forgotPasswordOTP !== otp.toString()) {
+        return res.status(401).send({
+            message: 'Invalid OTP'
+        })
+    }
+
+    user.password = password.toString();
+    user.forgotPasswordOTP = '';
+    await user.save();
+})
 
 
 router.get('/users/me', auth, async (req, res) => {

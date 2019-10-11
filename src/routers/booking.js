@@ -6,6 +6,7 @@ const User = require('../models/user');
 
 const { sendBookingEmailToSpace, sendBookingEmailToUser } = require('../utils/email');
 const { sendSMS } = require('../utils/sms')
+const { generateBookingId } = require('../utils/randomString');
 
 const auth = require('../middleware/auth');
 // const imageUpload = require('../utils/imageUpload');
@@ -25,6 +26,7 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
     booking.costPerHour = storageSpace.costPerHour;
     booking.numberOfBags = parseInt(req.body.numberOfBags);
     booking.schemaVersion = 1;
+    booking.bookingId = generateBookingId();
 
     // Calculating the booking price.
     // Doing this here because this is temporary and I don't have a lot of time.

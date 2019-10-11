@@ -58,6 +58,11 @@ const bookingSchema = new mongoose.Schema({
     transaction: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'transaction'
+    },
+    bookingId: {
+        type: String,
+        required: true,
+        default: 'TLOTHW'
     }
 }, {
     timestamps: true,
@@ -83,8 +88,6 @@ bookingSchema.index({ storageSpace: 1 });
 //     await this.save();
 //     return netStorageCost;
 // }
-
-
 
 bookingSchema.methods.setPrice = async function () {
     const timeDelta = (this.checkoutTime.getTime() - this.checkInTime.getTime()) / 1000;      // getTime() returns time in milliseconds
