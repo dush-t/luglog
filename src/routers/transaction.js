@@ -6,6 +6,8 @@ const axios = require('axios');
 const Razorpay = require('razorpay');
 const path = require('path');
 const hbs = require('hbs')
+const { sendSMS } = require('../utils/sms');
+const { sendBookingEmailToSpace, sendBookingEmailToUser } = require('../utils/email');
 
 
 const auth = require('../middleware/auth');
@@ -70,7 +72,20 @@ router.post('/api/confirmPayment/:transaction_id', async (req, res) => {
     console.log(req.body)
     console.log(razorpay_payment_id, razorpay_payment_id, razorpay_signature)
     
-    const transaction = await Transaction.findOne({ razorpayOrderId: req.body.razorpay_order_id});
+    const transaction = await Transaction.findOne({ razorpayOrderId: req.body.razorpay_order_id}).populate({
+        path: 'user',
+        model: 'User',
+        select: 'name mobile_number email'
+    }).populate({
+        path: 'booking',
+        model: 'Booking',
+        populate: {
+            path: 'storageSpace',
+            model: 'StorageSpace',
+            select: 'name number email'
+        }
+    });
+
     var instance = new Razorpay({
         key_id: process.env.RAZORPAY_ID,
         key_secret: process.env.RAZORPAY_SECRET
@@ -80,8 +95,18 @@ router.post('/api/confirmPayment/:transaction_id', async (req, res) => {
         transaction.status = 'COMPLETE';
         await transaction.save();
         console.log(transaction);
-        // return res.status(200).send(transaction);
+
+        const userBody = `Booking confirmed! Your booking for cloakroom facility at ${transaction.booking.storageSpace.name} has been confirmed.`
+        sendSMS(transaction.user.mobile_number, userBody)
+        const vendorBody = `New booking! Booking (id: ${transaction.booking._id}) has been made for your store for ${transaction.booking.numberOfBags} bags from ${transaction.booking.checkInTime} to ${transaction.booking.checkOutTime} `
+        sendSMS(transaction.booking.storageSpace.number, vendorBody)
+
         res.render('paymentSuccessful', {title: 'SUCCESS'});
+        
+        // email not so important, so will send it after the payment is complete.
+        sendBookingEmailToSpace(transaction.booking.storageSpace.email, '');
+        sendBookingEmailToUser(transaction.user.email, transaction.user.name, transaction.booking.storageSpace.name);
+
     } else {
         // return res.status(400).send();
         res.render('paymentSuccessful', {title: 'FAILURE'});

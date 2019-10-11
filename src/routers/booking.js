@@ -50,25 +50,18 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
 
 
 router.get('/api/bookings', auth, async (req, res) => {
-    const user = await User.findById(req.user._id).populate({       // I'm ashamed of this.
-        path: 'bookings',
-        model: 'Booking',
-        populate: [
-            {
-                path: 'storageSpace',
-                model: 'StorageSpace',
-                select: 'name type address',
-                populate: {
-                    path: 'area',
-                    model: 'Area'
-                }
-            },
-            {
-                path: 'consumer',
-                model: 'User',
-                select: 'name'
-            }
-        ]
+    const bookings = await Booking.find({consumer: req.user._id, 'transaction.status': 'COMPLETE'}).populate({
+        path: 'storageSpace',
+        model: 'StorageSpace',
+        select: 'name type address',
+        populate: {
+            path: 'area',
+            model: 'Area'
+        }
+    }).populate({
+        path: 'consumer',
+        model: 'User',
+        select: 'name'
     })
     res.status(200).send(user.bookings);
 })
@@ -87,7 +80,19 @@ router.get('/api/booking/:booking_id', auth, async (req, res) => {
         path: 'consumer',
         model: 'User',
         select: 'name'
+    }).populate({
+        path: 'transaction',
+        model: 'Transaction',
+        select: 'status'
     })
+
+    // If user hasn't paid for the booking yet, don't let him see it.
+    if (!booking.transaction || booking.transaction.status !== 'COMPLETE') {
+        return res.status(405).send({
+            error: "You haven't paid for the booking yet"
+        })
+    }
+
     res.status(200).send(booking);
 })
 
