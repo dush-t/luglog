@@ -77,16 +77,25 @@ router.post('/users/resetPassword', async (req, res) => {
     const number = req.body.number;
     const password = req.body.password;
     const user = await User.findOne({ mobile_number: parseInt(number) });
+
+    if (!user) {
+        return res.status(404).send({
+            message: 'Could not find user with this phone number'
+        });
+    }
     
     if (user.forgotPasswordOTP !== otp.toString()) {
         return res.status(401).send({
             message: 'Invalid OTP'
-        })
+        });
     }
 
     user.password = password.toString();
     user.forgotPasswordOTP = '';
     await user.save();
+    res.send({
+        message: 'Password was successfully updated!'
+    });
 })
 
 
