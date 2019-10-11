@@ -68,7 +68,14 @@ router.get('/api/bookings', auth, async (req, res) => {
         select: 'status'
     })
 
-    const validBookings = bookings.filter((booking) => booking.transaction.status === 'COMPLETE')
+    // Tried to somehow get valid bookings from the mongoose query itself but didn't work
+    // and I'm running out of patience at this point.
+    const validBookings = bookings.filter((booking) => {
+        if (!booking.transaction || booking.transaction.status !== 'COMPLETE') {
+            return false;
+        }
+        return true;
+    });
     res.status(200).send(validBookings);
 })
 
