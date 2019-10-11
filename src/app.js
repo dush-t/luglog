@@ -6,7 +6,7 @@ const multer = require('multer');
 const path = require('path');
 const hbs = require('hbs')
 
-const upload = multer();
+// const upload = multer();
 require('./db/mongoose'); // calling require will ensure that the file runs.
 
 const userRouter = require('./routers/user');
@@ -31,7 +31,7 @@ app.set('views', viewsPath);
 
 app.use(express.json()); // ask express to automatically parse incoming json.
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(upload.array()); 
+// app.use(upload.array()); 
 
 app.use(loggerMiddleware);
 
