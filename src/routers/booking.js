@@ -50,7 +50,7 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
 
 
 router.get('/api/bookings', auth, async (req, res) => {
-    const bookings = await Booking.find({consumer: req.user._id, 'transaction.status': 'COMPLETE'}).populate({
+    const bookings = await Booking.find({ consumer: req.user._id }).populate({
         path: 'storageSpace',
         model: 'StorageSpace',
         select: 'name type address',
@@ -62,8 +62,14 @@ router.get('/api/bookings', auth, async (req, res) => {
         path: 'consumer',
         model: 'User',
         select: 'name'
+    }).populate({
+        path: 'transaction',
+        model: 'Transaction',
+        select: 'status'
     })
-    res.status(200).send(bookings);
+
+    const validBookings = bookings.filter((booking) => booking.transaction.status === 'COMPLETE')
+    res.status(200).send(validBookings);
 })
 
 
