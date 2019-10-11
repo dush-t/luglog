@@ -63,7 +63,7 @@ router.get('/api/bookings', auth, async (req, res) => {
         model: 'User',
         select: 'name'
     })
-    res.status(200).send(user.bookings);
+    res.status(200).send(bookings);
 })
 
 
