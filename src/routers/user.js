@@ -72,6 +72,21 @@ router.post('/users/forgotPasswordOTP', async (req, res) => {
     return res.send({'message': 'OTP sent to mobile number of user'});
 })
 
+router.post('/users/verifyOTP', async (req, res) => {
+    const number = req.body.number;
+    const otp = req.body.otp;
+    const user = await User.findOne({ mobile_number: parseInt(number) });
+    if (user.forgotPasswordOTP === otp.toString()) {
+        return res.status(200).send({
+            status: 'verified'
+        })
+    } else {
+        return res.status(412).send({
+            status: 'unverified'
+        })
+    }
+})
+
 router.post('/users/resetPassword', async (req, res) => {
     const otp = req.body.otp;
     const number = req.body.number;
