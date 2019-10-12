@@ -61,7 +61,7 @@ router.post('/users/verifyNumber', async (req, res) => {
     const otp = req.body.otp
     const number = req.body.number
     const sendOTP = new sendotp(process.env.SMS_AUTHKEY);
-    sendOTP(number.toString(), 'GLGFree', otp, (error, data) => {
+    sendOTP.send(number.toString(), 'GLGFree', otp, (error, data) => {
         console.log(error);
         console.log(data);
     })
@@ -75,7 +75,7 @@ router.post('/users/forgotPasswordOTP', async (req, res) => {
     user.forgotPasswordOTP = OTP;
     await user.save();
     const sendOTP = new sendotp(process.env.SMS_AUTHKEY);
-    sendOTP(number.toString(), 'GLGFree', OTP, (error, data) => {
+    sendOTP.send(number.toString(), 'GLGFree', OTP, (error, data) => {
         console.log(error);
         console.log(data);
     })
