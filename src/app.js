@@ -1,12 +1,21 @@
 // index.js creates the express server and runs it.
 
 const express = require('express');
+const app = express();
+
+// Setting up Sentry
+const Sentry = require('@sentry/node');
+Sentry.init({ dsn: process.env.SENTRY_DSN })
+app.use(Sentry.Handlers.requestHandler());
+
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const path = require('path');
 const hbs = require('hbs')
 
 const upload = multer();
+
+// Setting up database
 require('./db/mongoose'); // calling require will ensure that the file runs.
 
 const userRouter = require('./routers/user');
@@ -16,7 +25,6 @@ const areaRouter = require('./routers/area');
 const imageRouter = require('./routers/image');
 const transactionRouter = require('./routers/transaction');
 
-const app = express();
 
 // log all requests to terminal, just like django.
 const loggerMiddleware = (req, res, next) => {
@@ -31,7 +39,7 @@ app.set('views', viewsPath);
 
 app.use(express.json()); // ask express to automatically parse incoming json.
 app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(upload.array()); 
+app.use(upload.array()); 
 
 app.use(loggerMiddleware);
 
@@ -41,5 +49,7 @@ app.use(storageSpaceRouter);
 app.use(bookingRouter);
 app.use(imageRouter);
 app.use(transactionRouter);
+app.use(Sentry.Handlers.errorHandler());
+
 
 module.exports = app;
