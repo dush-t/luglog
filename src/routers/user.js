@@ -1,6 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const sharp = require('sharp');
+const sendotp = require('sendotp');
 
 const User = require('../models/user');
 
@@ -59,7 +60,12 @@ router.post('/users/logout', auth, async (req, res) => {
 router.post('/users/verifyNumber', async (req, res) => {
     const otp = req.body.otp
     const number = req.body.number
-    sendSMS(number.toString(), `OTP: ${otp}`);
+    const sendOTP = new sendotp(process.env.SMS_AUTHKEY);
+    sendOTP(number.toString(), 'GLGFree', otp, (error, data) => {
+        console.log(error);
+        console.log(data);
+    })
+    // sendSMS(number.toString(), `OTP: ${otp}`);
 })
 
 router.post('/users/forgotPasswordOTP', async (req, res) => {
@@ -68,7 +74,12 @@ router.post('/users/forgotPasswordOTP', async (req, res) => {
     const user = await User.findOne({ mobile_number: parseInt(number) });
     user.forgotPasswordOTP = OTP;
     await user.save();
-    sendSMS(number.toString(), `OTP to reset password: ${OTP}`);
+    const sendOTP = new sendotp(process.env.SMS_AUTHKEY);
+    sendOTP(number.toString(), 'GLGFree', OTP, (error, data) => {
+        console.log(error);
+        console.log(data);
+    })
+    // sendSMS(number.toString(), `OTP to reset password: ${OTP}`);
     return res.send({'message': 'OTP sent to mobile number of user'});
 })
 
