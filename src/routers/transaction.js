@@ -29,7 +29,10 @@ router.post('/api/payFor/:booking_id', auth, async (req, res) => {
         receipt: receiptId,
         payment_capture: 0
     }
+
+    console.log(booking);
     console.log(options)
+
     var instance = new Razorpay({
         key_id: process.env.RAZORPAY_ID,
         key_secret: process.env.RAZORPAY_SECRET
