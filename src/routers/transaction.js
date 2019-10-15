@@ -98,9 +98,9 @@ router.post('/api/confirmPayment/:transaction_id', async (req, res) => {
     if (transaction.hasValidSignature(razorpay_order_id, razorpay_payment_id, razorpay_signature)) {
         transaction.status = 'COMPLETE';
         await transaction.save();
-        console.log(transaction);
+        console.log(transaction.booking[0]);
 
-        const userBody = `Booking confirmed! Your booking for cloakroom facility at ${transaction.booking.storageSpace.name} has been confirmed.`
+        const userBody = `Booking confirmed! Your booking for cloakroom facility at ${transaction.booking[0].storageSpace.name} has been confirmed.`
         sendSMS(transaction.user.mobile_number, userBody)
         const vendorBody = `New booking! Booking (id: ${transaction.booking._id}) has been made for your store for ${transaction.booking.numberOfBags} bags from ${transaction.booking.checkInTime} to ${transaction.booking.checkOutTime} `
         sendSMS(transaction.booking.storageSpace.number, vendorBody)
