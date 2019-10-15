@@ -62,17 +62,17 @@ router.post('/api/storageSpace/:space_id/addImage', auth, adminAccess, upload.si
     }
 })
 
-// router.post('/api/storageSpace/:space_id/uploadOwnerImage', auth, adminAccess, upload.single('ownerImage'), async (req, res) => {
-//     const storageSpace = await StorageSpace.findById(req.params.space_id);
+router.post('/api/storageSpace/:space_id/uploadOwnerImage', auth, adminAccess, upload.single('ownerImage'), async (req, res) => {
+    const storageSpace = await StorageSpace.findById(req.params.space_id);
 
-//     const buffer = await sharp(req.file.buffer).png().toBuffer();
-//     const image = new Image({ imageContent: buffer });
-//     await image.save()
+    const buffer = await sharp(req.file.buffer).png().toBuffer();
+    const image = new Image({ imageContent: buffer });
+    await image.save()
 
-//     storageSpace.ownerImage = image._id;
-//     await storageSpace.save();
-//     res.status(200).send(storageSpace);
-// })
+    storageSpace.ownerImage = image._id;
+    await storageSpace.save();
+    res.status(200).send(storageSpace);
+})
 
 
 router.patch('/api/storageSpace/:space_id', auth, adminAccess, async (req, res) => {

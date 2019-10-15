@@ -9,11 +9,11 @@ Sentry.init({ dsn: process.env.SENTRY_DSN })
 app.use(Sentry.Handlers.requestHandler());
 
 const bodyParser = require('body-parser');
-const multer = require('multer');
+// const multer = require('multer');
 const path = require('path');
 const hbs = require('hbs')
 
-const upload = multer();
+// const upload = multer();
 
 // Setting up database
 require('./db/mongoose'); // calling require will ensure that the file runs.
@@ -39,7 +39,7 @@ app.set('views', viewsPath);
 
 app.use(express.json()); // ask express to automatically parse incoming json.
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(upload.array()); 
+// app.use(upload.array()); 
 
 app.use(loggerMiddleware);
 
