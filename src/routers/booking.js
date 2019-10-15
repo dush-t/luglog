@@ -58,7 +58,7 @@ router.get('/api/bookings', auth, async (req, res) => {
     const bookings = await Booking.find({ consumer: req.user._id }).populate({
         path: 'storageSpace',
         model: 'StorageSpace',
-        select: 'name type location longAddress',
+        select: 'name type location longAddress storeImages',
         populate: {
             path: 'area',
             model: 'Area'
@@ -89,7 +89,7 @@ router.get('/api/booking/:booking_id', auth, async (req, res) => {
     const booking = await Booking.findById(req.params.booking_id).populate({
         path: 'storageSpace',
         model: 'StorageSpace',
-        select: 'name type location longAddress',
+        select: 'name type location longAddress storeImages',
         populate: {
             path: 'area',
             model: 'Area'
