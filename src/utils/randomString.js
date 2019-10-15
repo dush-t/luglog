@@ -30,7 +30,7 @@ const generateBookingId = () => {
     for (i = 0; i < 2; i++) {
         bookingId += Math.random().toString(36).substring(2,8)
     }
-    return bookingId;
+    return bookingId.substring(2,8).toUpperCase();
 }
 
 const generateRandomInt = (min, max) => {
