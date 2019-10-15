@@ -100,7 +100,6 @@ router.post('/api/confirmPayment/:transaction_id', async (req, res) => {
         await transaction.save();
         console.log(transaction);
 
-        console.log(transaction)
         const userBody = `Booking confirmed! Your booking for cloakroom facility at ${transaction.booking.storageSpace.name} has been confirmed.`
         sendSMS(transaction.user.mobile_number, userBody)
         const vendorBody = `New booking! Booking (id: ${transaction.booking._id}) has been made for your store for ${transaction.booking.numberOfBags} bags from ${transaction.booking.checkInTime} to ${transaction.booking.checkOutTime} `
