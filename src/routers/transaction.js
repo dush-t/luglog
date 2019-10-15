@@ -102,14 +102,14 @@ router.post('/api/confirmPayment/:transaction_id', async (req, res) => {
 
         const userBody = `Booking confirmed! Your booking for cloakroom facility at ${transaction.booking[0].storageSpace.name} has been confirmed.`
         sendSMS(transaction.user.mobile_number, userBody)
-        const vendorBody = `New booking! Booking (id: ${transaction.booking._id}) has been made for your store for ${transaction.booking.numberOfBags} bags from ${transaction.booking.checkInTime} to ${transaction.booking.checkOutTime} `
-        sendSMS(transaction.booking.storageSpace.number, vendorBody)
+        const vendorBody = `New booking! Booking (id: ${transaction.booking[0].bookingId}) has been made for your store for ${transaction.booking[0].numberOfBags} bags from ${transaction.booking[0].checkInTime} to ${transaction.booking[0].checkOutTime} `
+        sendSMS(transaction.booking[0].storageSpace.number, vendorBody)
 
         res.render('paymentSuccessful', {title: 'SUCCESS'});
         
         // email not so important, so will send it after the payment is complete.
-        sendBookingEmailToSpace(transaction.booking.storageSpace.email, '');
-        sendBookingEmailToUser(transaction.user.email, transaction.user.name, transaction.booking.storageSpace.name);
+        sendBookingEmailToSpace(transaction.booking[0].storageSpace.email, '');
+        sendBookingEmailToUser(transaction.user.email, transaction.user.name, transaction.booking[0].storageSpace.name);
 
     } else {
         // return res.status(400).send();
