@@ -77,7 +77,7 @@ router.post('/api/storageSpace/:space_id/addImage', auth, adminAccess, upload.si
 
 router.patch('/api/storageSpace/:space_id', auth, adminAccess, async (req, res) => {
     const updates = Object.keys(req.body);
-    const allowedUpdates = ['name', 'location', 'costPerHour', 'open', 'type', 'rating', 'hasCCTV', 'address', 'ownerName', 'ownerDetail', 'openingTime', 'closingTime', "number"]
+    const allowedUpdates = ['name', 'location', 'costPerHour', 'open', 'type', 'rating', 'hasCCTV', 'address', 'ownerName', 'ownerDetail', 'openingTime', 'closingTime', "number", "timings", "longAddress"]
     const isValidOperation = updates.every((update) => {
         return allowedUpdates.includes(update);
     });
