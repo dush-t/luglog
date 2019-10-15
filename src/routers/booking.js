@@ -7,6 +7,7 @@ const User = require('../models/user');
 const { sendBookingEmailToSpace, sendBookingEmailToUser } = require('../utils/email');
 const { sendSMS } = require('../utils/sms')
 const { generateBookingId } = require('../utils/randomString');
+const { getDays } = require('../utils/dateTime');
 
 const auth = require('../middleware/auth');
 // const imageUpload = require('../utils/imageUpload');
@@ -27,11 +28,13 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
     booking.numberOfBags = parseInt(req.body.numberOfBags);
     booking.schemaVersion = 1;
     booking.bookingId = generateBookingId();
+    booking.userGovtId = req.body.userGovtId;
+    booking.bookingPersonName = req.body.bookingPersonName;
+    booking.numberOfDays = getDays(req.body.checkInTime.toString(), req.body.checkOutTime.toString()); 
 
     // Calculating the booking price.
     // Doing this here because this is temporary and I don't have a lot of time.
-    const timeDelta = (booking.checkOutTime.getTime() - booking.checkInTime.getTime()) / 1000
-    const netStorageCost = ((booking.costPerHour / 3600) * timeDelta) * booking.numberOfBags;
+    const netStorageCost = booking.numberOfDays * 24 * booking.costPerHour * booking.numberOfBags;
     booking.netStorageCost = netStorageCost;
     await booking.save();
 
@@ -40,7 +43,7 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
     req.user.bookings.push(booking._id);
     await req.user.save();
 
-    const smsBody = `You have a new booking from ${req.user.name}. The number of bags is ${booking.numberOfBags} and the booking is for ${timeDelta/(60*60*24)} days. Booking ID: ${booking._id}`
+    const smsBody = `You have a new booking from ${req.user.name}. The number of bags is ${booking.numberOfBags} and the booking is for ${booking.numberOfDays} days. Booking ID: ${booking.bookingId}`
 
     sendSMS(storageSpace.number, smsBody);
 
@@ -55,7 +58,7 @@ router.get('/api/bookings', auth, async (req, res) => {
     const bookings = await Booking.find({ consumer: req.user._id }).populate({
         path: 'storageSpace',
         model: 'StorageSpace',
-        select: 'name type address',
+        select: 'name type location longAddress',
         populate: {
             path: 'area',
             model: 'Area'
@@ -86,7 +89,7 @@ router.get('/api/booking/:booking_id', auth, async (req, res) => {
     const booking = await Booking.findById(req.params.booking_id).populate({
         path: 'storageSpace',
         model: 'StorageSpace',
-        select: 'name type address',
+        select: 'name type location longAddress',
         populate: {
             path: 'area',
             model: 'Area'

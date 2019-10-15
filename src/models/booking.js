@@ -21,11 +21,6 @@ const bookingSchema = new mongoose.Schema({
         required: true,
         default: 1
     },
-    // status: {                           // 0 --> Checked in
-    //     type: Number,                   // 1 --> Checkout requested by user
-    //     default: 0,                     // 2 --> Checkout approved by vendor
-    //     required: true                  // 3 --> Checked out
-    // },
     luggageItems: [{
         photo: {
             type: Buffer,
@@ -63,6 +58,19 @@ const bookingSchema = new mongoose.Schema({
         type: String,
         required: true,
         default: 'TLOTHW'
+    },
+    userGovtId: {
+        type: String,
+        required: true
+    },
+    bookingPersonName: {
+        type: String,
+        required: true
+    },
+    numberOfDays: {
+        type: Number,
+        required: true,
+        default: 1
     }
 }, {
     timestamps: true,
@@ -73,21 +81,6 @@ const bookingSchema = new mongoose.Schema({
 bookingSchema.index({ storageSpace: 1 });
 
 
-
-// bookingSchema.methods.calculatePrice = async function () {
-//     let netStorageCost = 0
-//     const now = (new Date()).getTime();
-//     this.luggageItems.forEach((luggageItem) => {
-//         const checkInTime = luggageItem.checkInTime.getTime();
-//         const timeDelta = (now - checkInTime) / 1000;  // Getting time difference in seconds.
-//         const totalStorageCost = (this.costPerHour / 3600) * timeDelta;
-//         luggageItem.totalStorageCost = totalStorageCost;
-//         await luggageItem.save()
-//         netStorageCost = netStorageCost + totalStorageCost;
-//     })
-//     await this.save();
-//     return netStorageCost;
-// }
 
 bookingSchema.methods.setPrice = async function () {
     const timeDelta = (this.checkoutTime.getTime() - this.checkInTime.getTime()) / 1000;      // getTime() returns time in milliseconds

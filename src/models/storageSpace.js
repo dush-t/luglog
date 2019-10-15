@@ -61,6 +61,10 @@ const storageSpaceSchema = new mongoose.Schema({
         type: String,
         default: "address1"
     },
+    longAddress: {
+        type: String,
+        default: "address2"
+    },
     ownerName: {
         type: String,
         default: "Mr_Dush__T"
