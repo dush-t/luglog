@@ -84,6 +84,10 @@ const storageSpaceSchema = new mongoose.Schema({
     ownerImage: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Image"
+    },
+    timings: {
+        type: String,
+        default: '24x7'
     }
 })
 
