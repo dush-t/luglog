@@ -20,30 +20,6 @@ const transactionSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    // paytmOrderId: {
-    //     type: String
-    // },
-    // paytmTransactionId: {
-    //     type: String
-    // },
-    // paytmBankTransactionId: {
-    //     type: String
-    // },
-    // paymentGateway: {
-    //     type: String
-    // },
-    // bankName: {
-    //     type: String
-    // },
-    // paytmResponseCode: {
-    //     type: String
-    // },
-    // paytmResponseMessage: {
-    //     type: String
-    // },
-    // paytmParams: {
-    //     type: String
-    // }
     razorpayOrderId: {
         type: String
     },
@@ -63,6 +39,9 @@ transactionSchema.virtual('booking', {
     localField: '_id',
     foreignField: 'transaction'
 })
+
+transactionSchema.set('toObject', { virtuals: true });
+transactionSchema.set('toJSON', { virtuals: true });
 
 //I do not like the callback pattern. Wanna change this later.
 transactionSchema.methods.generateChecksum = function (callback) {
