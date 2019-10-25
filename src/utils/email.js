@@ -18,6 +18,14 @@ const sendBookingEmailToSpace = (email, booking) => {
         subject: "Booking recieved",
         text: `New booking recieved! Booking ID is ${booking.bookingId}. The booking is from ${booking.checkInTime} to ${booking.checkOutTime} for ${booking.numberOfBags} bags`
     })
+
+    // Notifying ourselves of some booking
+    sgMail.send({
+        to: 'shreyansh@goluggagefree.com',
+        from: 'goluggagefree@gmail.com',
+        subject: 'Booking recieved',
+        text: `New booking recieved! Booking ID is ${booking.bookingId}. The booking is from ${booking.checkInTime} to ${booking.checkOutTime} for ${booking.numberOfBags} bags`
+    })
 }
 
 const sendBookingEmailToUser = (email, name, vendorName) => {
