@@ -1,11 +1,7 @@
 const express = require('express');
 const Booking = require('../models/booking');
 const Transaction = require('../models/transaction');
-const checksum = require('../utils/checksum');
-const axios = require('axios');
 const Razorpay = require('razorpay');
-const path = require('path');
-const hbs = require('hbs')
 const { sendSMS } = require('../utils/sms');
 const { sendBookingEmailToSpace, sendBookingEmailToUser } = require('../utils/email');
 
@@ -108,7 +104,7 @@ router.post('/api/confirmPayment/:transaction_id', async (req, res) => {
         res.render('paymentSuccessful', {title: 'SUCCESS'});
         
         // email not so important, so will send it after the payment is complete.
-        sendBookingEmailToSpace(transaction.booking[0].storageSpace.email, '');
+        sendBookingEmailToSpace(transaction.booking[0].storageSpace.email, transaction.booking[0]);
         sendBookingEmailToUser(transaction.user.email, transaction.user.name, transaction.booking[0].storageSpace.name);
 
     } else {
