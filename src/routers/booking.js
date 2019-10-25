@@ -43,12 +43,12 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
     req.user.bookings.push(booking._id);
     await req.user.save();
 
-    const smsBody = `You have a new booking from ${req.user.name}. The number of bags is ${booking.numberOfBags} and the booking is for ${booking.numberOfDays} days. Booking ID: ${booking.bookingId}`
+    // const smsBody = `You have a new booking from ${req.user.name}. The number of bags is ${booking.numberOfBags} and the booking is for ${booking.numberOfDays} days. Booking ID: ${booking.bookingId}`
 
-    sendSMS(storageSpace.number, smsBody);
+    // sendSMS(storageSpace.number, smsBody);
 
-    sendBookingEmailToSpace(storageSpace.email, storageSpace.name);
-    sendBookingEmailToUser(req.user.email, req.user.name, storageSpace.name);
+    // sendBookingEmailToSpace(storageSpace.email, storageSpace.name);
+    // sendBookingEmailToUser(req.user.email, req.user.name, storageSpace.name);
 
     return res.status(201).send(booking);
 })
