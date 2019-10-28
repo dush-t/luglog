@@ -52,7 +52,7 @@ const bookingSchema = new mongoose.Schema({
     },
     transaction: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'transaction'
+        ref: 'Transaction'
     },
     bookingId: {
         type: String,
