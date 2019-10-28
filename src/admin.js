@@ -6,6 +6,7 @@ const Area = require('./models/area');
 const Booking = require('./models/booking');
 const StorageSpace = require('./models/storageSpace');
 const Transaction = require('./models/transaction');
+const Image = require('./models/image');
 
 // SETUP ADMIN PANEL
 AdminBro.registerAdapter(require('admin-bro-mongoose'))
@@ -56,7 +57,7 @@ const storageSpaceResource = {
 }
 
 const adminBro = new AdminBro({
-    resources: [userResource, Area, Booking, storageSpaceResource, Transaction],
+    resources: [userResource, Area, Booking, storageSpaceResource, Transaction, Image],
     rootPath: '/admin',
     branding: {
         companyName: 'GoLuggageFree',
