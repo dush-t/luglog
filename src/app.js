@@ -7,7 +7,6 @@ const multer = require('multer');
 const path = require('path');
 const hbs = require('hbs')
 
-const { adminRouter, rootPath } = require('./admin');
 
 
 // SETUP SENTRY
@@ -20,6 +19,7 @@ const upload = multer();
 
 // OPEN DATABASE CONNECTION
 require('./db/mongoose');
+const { adminRouter, rootPath } = require('./admin');
 
 // IMPORT ROUTERS
 const userRouter = require('./routers/user');
