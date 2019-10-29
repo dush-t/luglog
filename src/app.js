@@ -28,6 +28,7 @@ const bookingRouter = require('./routers/booking');
 const areaRouter = require('./routers/area');
 const imageRouter = require('./routers/image');
 const transactionRouter = require('./routers/transaction');
+const loggingRouter = require('./routers/logging');
 
 
 // SETUP LOGGING MIDDLEWARE
@@ -58,6 +59,6 @@ app.use(bookingRouter);
 app.use(imageRouter);
 app.use(transactionRouter);
 app.use(Sentry.Handlers.errorHandler());
-
+app.use(loggingRouter);
 
 module.exports = app;
