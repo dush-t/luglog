@@ -74,15 +74,13 @@ router.post('/api/confirmPayment/:transaction_id', async (req, res) => {
     
     const transaction = await Transaction.findOne({ razorpayOrderId: req.body.razorpay_order_id}).populate({
         path: 'user',
-        model: 'User',
-        select: 'name mobile_number email'
+        model: 'User'
     }).populate({
         path: 'booking',
         model: 'Booking',
         populate: {
             path: 'storageSpace',
-            model: 'StorageSpace',
-            select: 'name number email'
+            model: 'StorageSpace'
         }
     });
 
@@ -104,8 +102,9 @@ router.post('/api/confirmPayment/:transaction_id', async (req, res) => {
         res.render('paymentSuccessful', {title: 'SUCCESS'});
         
         // email not so important, so will send it after the payment is complete.
-        sendBookingEmailToSpace(transaction.booking[0].storageSpace.email, transaction.booking[0]);
-        sendBookingEmailToUser(transaction.user.email, transaction.user.name, transaction.booking[0].storageSpace.name);
+        const booking  = transaction.booking[0]
+        sendBookingEmailToSpace(transaction.booking[0].storageSpace.email, {storageSpace: booking.storageSpace, booking: booking, user: transaction.user});
+        sendBookingEmailToUser(transaction.user.email, {storageSpace: booking.storageSpace, booking: booking, user: transaction.user});
 
     } else {
         // return res.status(400).send();
