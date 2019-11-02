@@ -94,15 +94,31 @@ router.post('/api/confirmPayment/:transaction_id', async (req, res) => {
         await transaction.save();
         console.log(transaction.booking[0]);
 
-        const userBody = `Booking confirmed! Your booking for cloakroom facility at ${transaction.booking[0].storageSpace.name} has been confirmed.`
-        sendSMS(transaction.user.mobile_number, userBody)
-        const vendorBody = `New booking! Booking (id: ${transaction.booking[0].bookingId}) has been made for your store for ${transaction.booking[0].numberOfBags} bags from ${transaction.booking[0].checkInTime} to ${transaction.booking[0].checkOutTime} `
+        // const userBody = `Booking confirmed! Your booking for cloakroom facility at ${transaction.booking[0].storageSpace.name} has been confirmed.`
+        // sendSMS(transaction.user.mobile_number, userBody)
+        const booking  = transaction.booking[0]
+
+
+        const vendorBody = `
+New Booking received, GoLuggageFree!
+
+Booking ID: ${booking.bookingId}
+Govt. ID Proof: ${booking.userGovtId}
+Name: ${transaction.user.name}
+
+Number of bags: ${transaction.numberOfBags}
+Check-in time: ${tranaction.checkInTime}
+Check-out time: ${transaction.checkOutTime}
+
+Total booking amount: ${booking.netStorageCost}
+(Paid online)
+`
+
         sendSMS(transaction.booking[0].storageSpace.number, vendorBody)
 
         res.render('paymentSuccessful', {title: 'SUCCESS'});
         
         // email not so important, so will send it after the payment is complete.
-        const booking  = transaction.booking[0]
         sendBookingEmailToSpace(transaction.booking[0].storageSpace.email, {storageSpace: booking.storageSpace, booking: booking, user: transaction.user});
         sendBookingEmailToUser(transaction.user.email, {storageSpace: booking.storageSpace, booking: booking, user: transaction.user});
 

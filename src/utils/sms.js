@@ -2,7 +2,7 @@ const axios = require('axios');
 
 const sendSMS = (number, body) => {
     const postData = {
-        "sender": "SOCKET",
+        "sender": "GLFree",
         "route": "4",
         "country": "91",
         "sms": [{
