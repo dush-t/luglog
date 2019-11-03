@@ -107,7 +107,7 @@ Govt. ID Proof: ${booking.userGovtId}
 Name: ${transaction.user.name}
 
 Number of bags: ${transaction.numberOfBags}
-Check-in time: ${tranaction.checkInTime}
+Check-in time: ${transaction.checkInTime}
 Check-out time: ${transaction.checkOutTime}
 
 Total booking amount: ${booking.netStorageCost}
@@ -121,6 +121,8 @@ Total booking amount: ${booking.netStorageCost}
         // email not so important, so will send it after the payment is complete.
         sendBookingEmailToSpace(transaction.booking[0].storageSpace.email, {storageSpace: booking.storageSpace, booking: booking, user: transaction.user});
         sendBookingEmailToUser(transaction.user.email, {storageSpace: booking.storageSpace, booking: booking, user: transaction.user});
+
+        throw new Error(`Booking recieved! ${transaction.user.name}, ${transaction.user.mobile_number}, ${booking.storageSpace.name}, ${booking._id.toString()}`);
 
     } else {
         // return res.status(400).send();
