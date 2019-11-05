@@ -10,6 +10,7 @@ const auth = require('../middleware/auth');
 const {sendWelcomeEmail} = require('../utils/email');
 const {sendSMS} = require('../utils/sms');
 const {generateUUID, generateRandomInt} = require('../utils/randomString');
+const { sendNewUserNotification } = require('../utils/slack');
 
 const router = new express.Router();
 
@@ -23,6 +24,7 @@ router.post('/users', async (req, res) => {
         sendWelcomeEmail(user.email, user.name);
         const token = await user.generateAuthToken();
         res.status(201).send({ user: user, token: token });
+        sendNewUserNotification(user);
     } catch (e) {
         console.log(e);
         res.status(400).send(e)

@@ -6,6 +6,7 @@ const User = require('../models/user');
 
 const { generateBookingId } = require('../utils/randomString');
 const { getDays } = require('../utils/dateTime');
+const { sendNewBookingNotification } = require('../utils/slack');
 
 const auth = require('../middleware/auth');
 // const imageUpload = require('../utils/imageUpload');
@@ -41,7 +42,8 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
     req.user.bookings.push(booking._id);
     await req.user.save();
 
-    return res.status(201).send(booking);
+    res.status(201).send(booking);
+    sendNewBookingNotification(booking, storageSpace, user);
 })
 
 
