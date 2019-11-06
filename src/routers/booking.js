@@ -43,7 +43,7 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
     await req.user.save();
 
     res.status(201).send(booking);
-    sendNewBookingNotification(booking, storageSpace, user);
+    sendNewBookingNotification(booking, storageSpace, req.user);
 })
 
 

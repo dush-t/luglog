@@ -70,6 +70,7 @@ const sendNewBookingNotification = (booking, storageSpace, user) => {
         })
 }
 
+
 module.exports = {
     sendNewBookingNotification,
     sendNewUserNotification
