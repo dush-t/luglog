@@ -5,7 +5,8 @@ const app = express();
 const bodyParser = require('body-parser');
 const multer = require('multer');
 const path = require('path');
-const hbs = require('hbs')
+const hbs = require('hbs');
+const cors = require('cors'); // no harm, for now
 
 
 
@@ -46,6 +47,9 @@ app.set('views', viewsPath);
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(upload.array()); 
+
+// SETUP CORS MIDDLEWARE
+app.use(cors);
 
 app.use(loggerMiddleware);
 

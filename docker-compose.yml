@@ -32,3 +32,22 @@ services:
       - /home/mr_dush__t/mongodb-data:/data/db
     ports:
       - "27017:27017"
+version: "2"
+services:
+  app:
+    container_name: luglog
+    env_file:
+      - /home/mr_dush__t/env/env.env
+    restart: always
+    build: .
+    ports:
+      - "3005:3005"
+    links:
+      - mongo
+  mongo:
+    container_name: mongo
+    image: mongo
+    volumes:
+      - /home/mr_dush__t/mongodb-data:/data/db
+    ports:
+      - "27017:27017"
