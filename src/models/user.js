@@ -63,6 +63,8 @@ const userSchema = new mongoose.Schema({
     forgotPasswordOTP: {
         type: String
     }
+}, {
+    timestamps: true
 })
 
 
