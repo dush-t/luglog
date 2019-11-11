@@ -5,7 +5,7 @@ const Area = require('../../models/area');
 const resolver = {
     Query: {
         async storageSpace(parent, args) {
-            if (parent._id) {
+            if (parent !== undefined) {
                 const storageSpace = await StorageSpace.findOne({ _id: parent.storageSpace }).populate('area');
                 return storageSpace;
             } else {
