@@ -9,5 +9,5 @@ type User {
 }
 
 type Query {
-    user(mobile_number: Int): User
+    user(mobile_number: Long): User
 }
