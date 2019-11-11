@@ -5,8 +5,11 @@ const resolver = {
     Query: {
         async user(_, args, context) {
             if (args.mobile_number) {
-                const user = await User.findOne({mobile_number: args.mobile_number});
-                return user;
+                const user = await User.findOne({mobile_number: parseInt(args.mobile_number)});
+                return {
+                    ...user,
+                    mobile_number: user.mobile_number.toString()
+                };
             }
             return context.currentUser;
         }
