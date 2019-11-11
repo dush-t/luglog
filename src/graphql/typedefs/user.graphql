@@ -1,7 +1,7 @@
 type User {
     name: String
-    email: String
-    mobile_number: Int
+    # email: String
+    # mobile_number: Int
     uniqueId: String
     tokens: [String]
     is_luggage_stored: Boolean

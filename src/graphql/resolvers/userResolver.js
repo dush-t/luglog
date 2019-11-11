@@ -4,12 +4,9 @@ const User = require('../../models/user');
 const resolver = {
     Query: {
         async user(_, args, context) {
-            if (args.mobile_number) {
-                const user = await User.findOne({mobile_number: parseInt(args.mobile_number)});
-                return {
-                    ...user,
-                    mobile_number: user.mobile_number.toString()
-                };
+            if (args.name) {
+                const user = await User.findOne({ name: args.name });
+                return user;
             }
             return context.currentUser;
         }
