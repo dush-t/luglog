@@ -1,4 +1,6 @@
 const Booking = require('../../models/booking');
+const StorageSpace = require('../../models/storageSpace');
+const Transaction = require('../../models/transaction');
 
 const resolver = {
     Query: {
@@ -14,10 +16,20 @@ const resolver = {
 
     Booking: {
         async storageSpace(parent) {
-            return parent.storageSpace;
+            if (Object.keys(parent.storageSpace).length > 1) {
+                return parent.storageSpace;
+            }
+            const storageSpace = await storageSpace.findById(parent.storageSpace._id).populate('area');
+            return storageSpace;
         },
         async consumer(parent) {
             return parent.consumer
+        },
+        async transaction(parent) {
+            if (parent.transaction) {
+                await parent.populate('transaction').execPopulate();
+                return parent.transaction;
+            }
         }
     }
 }

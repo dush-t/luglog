@@ -18,6 +18,16 @@ const resolver = {
             const storageSpaces = await StorageSpace.find(args).populate('area');
             return storageSpaces;
         }
+    },
+
+    StorageSpace: {
+        async area(parent) {
+            if (Object.keys(parent.area).length > 1) { // checking if area was prefetched
+                return parent.area;
+            }
+            const area = await Area.findById(parent.area._id);
+            return area;
+        }
     }
 }
 
