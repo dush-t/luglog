@@ -11,9 +11,9 @@ const cors = require('cors'); // no harm, for now
 
 // SETUP GRAPHQL
 const { ApolloServer, gql } = require('apollo-server-express');
-const typedefs = require('./graphql/typedefs');
+const typeDefs = require('./graphql/typedefs');
 const resolvers = require('./graphql/resolvers');
-const graphqlServer = new ApolloServer({typedefs, resolvers});
+const graphqlServer = new ApolloServer({typeDefs, resolvers});
 
 
 
