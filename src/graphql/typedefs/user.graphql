@@ -9,5 +9,5 @@ type User {
 }
 
 type Query {
-    user(mobile_number: String): User
+    user(name: String): User
 }
