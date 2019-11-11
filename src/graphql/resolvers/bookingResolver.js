@@ -20,9 +20,6 @@ const resolver = {
 
     Booking: {
         async storageSpace(parent) {
-            if (parent.storageSpace) {
-                return parent.storageSpace;
-            }
             const storageSpace = await storageSpace.findById(parent.storageSpace._id).populate('area');
             return storageSpace;
         },

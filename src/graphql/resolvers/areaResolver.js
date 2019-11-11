@@ -4,11 +4,11 @@ const StorageSpace = require('../../models/storageSpace');
 const resolver = {
     Query: {
         async area(_, args) {
-            const area = await Area.findOne(args).populate('storageSpaces');
+            const area = await Area.findOne(args);
             return area;
         },
         async areas() {
-            const areas = await Area.find({}).populate('storageSpaces');
+            const areas = await Area.find({});
             return areas
         }
     },

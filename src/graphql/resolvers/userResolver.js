@@ -5,7 +5,7 @@ const resolver = {
     Query: {
         async user(_, args, context) {
             if (args.name) {
-                const user = await User.findOne({ name: args.name }).populate('bookings');
+                const user = await User.findOne({ name: args.name });
                 return user;
             }
             return context.currentUser;
@@ -14,9 +14,6 @@ const resolver = {
 
     User: {
         async bookings(parent) {
-            if (Object.keys(user.bookings[0]).length > 1) {
-                return parent.bookings;
-            }
             const bookings = await Booking.find({ consumer: parent._id })
             return bookings;
         }
