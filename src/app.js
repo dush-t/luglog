@@ -13,6 +13,8 @@ const cors = require('cors'); // no harm, for now
 const { ApolloServer, gql } = require('apollo-server-express');
 const typeDefs = require('./graphql/typedefs');
 const resolvers = require('./graphql/resolvers');
+console.log(typeDefs)
+console.log(resolvers)
 const graphqlServer = new ApolloServer({typeDefs, resolvers});
 
 
@@ -56,7 +58,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(upload.array()); 
 
 // SETUP CORS MIDDLEWARE
-app.use(cors);
+// app.use(cors);
 
 app.use(loggerMiddleware);
 
