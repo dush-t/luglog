@@ -22,7 +22,7 @@ const resolver = {
 
     StorageSpace: {
         async area(parent) {
-            const area = await Area.findById(parent.area._id);
+            const area = await Area.findById(parent.area);
             return area;
         }
     }
