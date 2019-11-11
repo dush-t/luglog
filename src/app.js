@@ -9,6 +9,13 @@ const hbs = require('hbs');
 const cors = require('cors'); // no harm, for now
 
 
+// SETUP GRAPHQL
+const { ApolloServer, gql } = require('apollo-server-express');
+const typedefs = require('./graphql/typedefs');
+const resolvers = require('./graphql/resolvers');
+const graphqlServer = new ApolloServer({typedefs, resolvers});
+
+
 
 // SETUP SENTRY
 const Sentry = require('@sentry/node');
@@ -65,4 +72,5 @@ app.use(transactionRouter);
 app.use(Sentry.Handlers.errorHandler());
 app.use(loggingRouter);
 
+graphqlServer.applyMiddleware({ app });
 module.exports = app;

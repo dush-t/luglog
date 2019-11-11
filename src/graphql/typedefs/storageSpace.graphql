@@ -1,0 +1,25 @@
+type StorageSpace {
+    _id: String!
+    name: String
+    location: String
+    # email: String
+    # number: String
+    area: Area
+    costPerHour: Float
+    open: Boolean
+    rating: Float
+    type: String
+    hasCCTV: Boolean
+    storeImages: [String]
+    address: String
+    longAddress: String
+    ownerName: String
+    ownerDetail: String
+    ownerImage: String
+    timings: String
+}
+
+type Query {
+    storageSpace(_id: String!): StorageSpace
+    storageSpaces(area: String, open: Boolean): [StorageSpace]
+}

@@ -1,0 +1,10 @@
+type Transaction {
+    status: String!
+    amount: Float
+    kind: String
+    user: User
+    razorpayOrderId: String
+    razorpayReceiptId: String
+    razorPayOrderJSON: String
+    razorpayPaymentId: String
+}

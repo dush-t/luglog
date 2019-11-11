@@ -1,0 +1,21 @@
+type Booking {
+    _id: String!
+    storageSpace: StorageSpace
+    consumer: User
+    costPerHour: Int
+    numberOfBags: Int
+    checkInTime: String
+    checkOutTime: String
+    netStorageCost: String
+    transaction: Transaction
+    bookingID: String
+    userGovtId: String
+    bookingPersonName: String
+    numberOfDays: String
+    createdAt: String
+}
+
+type Query {
+    booking(_id: String!): Booking
+    bookings(storageSpace: String, consumer: String): [Booking]
+}

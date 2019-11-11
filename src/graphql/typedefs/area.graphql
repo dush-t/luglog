@@ -1,0 +1,10 @@
+type Area {
+    _id: String!
+    name: String
+    storageSpaces: [StorageSpace]
+}
+
+type Query {
+    area(_id: String, name: String): Area
+    areas: [Area]
+}
