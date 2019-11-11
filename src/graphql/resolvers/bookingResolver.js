@@ -20,7 +20,7 @@ const resolver = {
 
     Booking: {
         async storageSpace(parent) {
-            const storageSpace = await storageSpace.findById(parent.storageSpace._id).populate('area');
+            const storageSpace = await StorageSpace.findById(parent.storageSpace._id).populate('area');
             return storageSpace;
         },
         async consumer(parent) {
