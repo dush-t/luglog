@@ -9,5 +9,5 @@ type User {
 }
 
 type Query {
-    user(_id: String, uniqueId: String): User
+    user: User
 }

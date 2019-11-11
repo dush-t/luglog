@@ -8,13 +8,34 @@ const path = require('path');
 const hbs = require('hbs');
 const cors = require('cors'); // no harm, for now
 
+// For authentication in graphql
+const User = require('./models/user');
+
 // SETUP GRAPHQL
 const { ApolloServer, gql, graphiqlExpress } = require('apollo-server-express');
 const typeDefs = require('./graphql/typedefs');
 const resolvers = require('./graphql/resolvers');
-console.log(typeDefs)
-console.log(resolvers)
-const graphqlServer = new ApolloServer({typeDefs, resolvers, introspection: true, playground: true});
+
+const graphqlServer = new ApolloServer({
+    typeDefs, 
+    resolvers, 
+    introspection: true, 
+    playground: true,
+    context: async ({ req }) => {
+        let authToken = null;
+        let currentUser = null;
+        try {
+            authToken = req.header('Authorization').replace('Bearer', '');
+            currentUser = User.findByToken(authToken);
+        } catch (e) {
+            console.log('Unable to authenticate user!')
+        }
+        return {
+            authToken,
+            currentUser
+        }
+    }
+});
 
 
 

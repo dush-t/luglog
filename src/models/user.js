@@ -101,6 +101,17 @@ userSchema.statics.findByCredentials = async (mobileNo, password) => {
     return user;
 }
 
+userSchema.statics.findByToken = async (token) => {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || '1234');
+    const user = await User.findOne({ _id: decoded._id, 'tokens.token': token });
+
+    if (!user) {
+        return null;
+    }
+
+    return user;
+}
+
 userSchema.pre('save', async function (next) {
     const user = this;
     if (user.isModified('password')) {
