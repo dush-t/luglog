@@ -5,7 +5,7 @@ const Transaction = require('../../models/transaction');
 const resolver = {
     Query: {
         async booking(parent, args, context) {
-            const booking = await Booking.findOne({ _id: args._id }).populate('storageSpace').populate('consumer');
+            const booking = await Booking.findOne({ _id: args._id });
             return {
                 ...booking,
                 storageSpacePopulated: true,
@@ -13,14 +13,15 @@ const resolver = {
             };
         },
         async bookings(parent, args, context) {
-            const bookings = await Booking.find(args).populate('storageSpace').populate('consumer');
+            const bookings = await Booking.find(args);
             return bookings;
         }
     },
 
     Booking: {
         async storageSpace(parent) {
-            const storageSpace = await StorageSpace.findById(parent.storageSpace._id).populate('area');
+            console.log(parent.storageSpace);
+            const storageSpace = await StorageSpace.findById(parent.storageSpace);
             return storageSpace;
         },
         async consumer(parent) {
