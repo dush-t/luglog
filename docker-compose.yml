@@ -3,7 +3,7 @@ services:
   app:
     container_name: luglog
     env_file:
-      - /home/mr_dush__t/env/env.env
+      - /var/www/luglog-api/environment/api-environment.env
     restart: always
     build: .
     ports:
@@ -15,11 +15,11 @@ services:
     container_name: mongo0
     build: ./docker/db
     volumes:
-      - /home/mr_dush__t/mongodb-data:/data/db
+      - /var/www/luglog-api/db:/data/db
     ports:
       - "27017:27017"
     restart: always
-    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0", "--keyFile", "/tmp/luglogdatabase", "--auth" ]
+    entrypoint: [ "/usr/bin/mongod", "--bind_ip_all", "--replSet", "rs0", "--keyFile", "/tmp/luglogdatabase" ]
   mongo1: # Secondary node
     hostname: mongo1
     container_name: mongo1
