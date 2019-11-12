@@ -78,7 +78,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(upload.array()); 
 
 // SETUP CORS MIDDLEWARE
-// app.use(cors);
+app.use(cors());
 
 app.use(loggerMiddleware);
 
