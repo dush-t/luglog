@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-mongoose.connect(process.env.MONGODB_URL || 'mongodb+srv://dushyant:tlothwby0107@cluster0-j5uti.mongodb.net/luglog?retryWrites=true&w=majority', {
+mongoose.connect(process.env.MONGODB_URL || "mongodb://luglogadmin:lolmao12345@mongo0:27017/luglog?authSource=admin", {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false
