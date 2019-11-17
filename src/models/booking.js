@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const StorageSpace = require('../models/storageSpace');
+const { couponTypes } = require('../constants/couponTypes');
 
 const bookingSchema = new mongoose.Schema({
     storageSpace: {
@@ -71,6 +72,11 @@ const bookingSchema = new mongoose.Schema({
         type: Number,
         required: true,
         default: 1
+    },
+    couponUsed: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Coupon',
+        default: null
     }
 }, {
     timestamps: true,
@@ -121,6 +127,17 @@ bookingSchema.methods.approveCheckout = async function () {
     await targetStorageSpace.save();
     await this.save();
     return this;
+}
+
+
+bookingSchema.methods.applyCoupon = async function (coupon, context) {
+    if (coupon.type === couponTypes.DISCOUNT) {
+        this.netStorageCost = this.netStorageCost * (1 - coupon.value/100);
+        this.couponUsed = coupon._id;
+        if (coupon.numberOfUsesBy(context.customer) === (coupon.numUsesAllowed - 1)) {
+            coupon.used = true
+        }
+    }
 }
 
 

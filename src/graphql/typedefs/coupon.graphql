@@ -1,0 +1,10 @@
+type Coupon {
+    type: String!,
+    value: String!,
+    used: String!,
+    constraints: String!
+}
+
+type Query {
+    coupons: [Coupon]
+}

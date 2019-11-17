@@ -4,6 +4,7 @@ const sharp = require('sharp');
 const sendotp = require('sendotp');
 
 const User = require('../models/user');
+const Customer = require('../models/customer');
 
 const auth = require('../middleware/auth');
 
@@ -214,6 +215,40 @@ router.get('/users/:id/avatar', async (req, res) => {
     } catch (e) {
 
     }
+})
+
+router.get('/users/migrate', async (req, res) => {
+    const users = await User.find({})
+    for (let i = 0; i < users.length; i++) {
+        const user = users[i];
+        const customer = new Customer({
+            user: user._id,
+            bookings: user.bookings.slice(),
+            isLuggageStored: user.is_luggage_stored,
+            forgotPasswordOTP: '',
+            coupons: []
+        });
+        await customer.save();
+        console.log(user._id, user.name, user.mobile_number);
+    }
+    res.send(users);
+})
+
+router.get('/users/migrateUser/:_id', async (req, res) => {
+    console.log('function called')
+    const user = await User.findOne({ _id: req.params._id });
+    console.log('user found')
+    const customer = new Customer({
+        user: user._id,
+        bookings: user.bookings.slice(),
+        isLuggageStored: user.is_luggage_stored,
+        forgotPassword: '',
+        coupons: []
+    });
+    await customer.save();
+    console.log('customer saved')
+    console.log(customer._id);
+    res.send(customer)
 })
 
 

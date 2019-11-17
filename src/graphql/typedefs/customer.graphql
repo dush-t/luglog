@@ -1,0 +1,12 @@
+type Customer {
+    _id: String!
+    bookings: [Booking]
+    isLuggageStored: Boolean
+    forgotPasswordOTP: String
+    coupons: [Coupon]
+    user: User
+}
+
+type Query {
+    customer(_id: String, user: String): Customer
+}

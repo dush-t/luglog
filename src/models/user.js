@@ -38,9 +38,6 @@ const userSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
-    avatar: {
-        type: Buffer
-    },
     tokens: [{
         token: {
             type: String,
@@ -62,6 +59,15 @@ const userSchema = new mongoose.Schema({
     }],
     forgotPasswordOTP: {
         type: String
+    },
+    coupons: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Coupon'
+    }],
+    type: {
+        type: String,
+        required: true,
+        default: 'CUSTOMER'
     }
 }, {
     timestamps: true

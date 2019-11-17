@@ -54,8 +54,7 @@ const storageSpaceSchema = new mongoose.Schema({
         default: true
     },
     storeImages: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Image'
+        tpye: String
     }],
     address: {
         type: String,
