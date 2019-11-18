@@ -21,7 +21,7 @@ const router = new express.Router();
 // CREATE A BOOKING
 router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
     const storageSpace = await StorageSpace.findById(req.params.space_id);
-    const customer = await Customer.findOne({ user: req.user._id });
+    const customer = await Customer.findOne({ user: req.user._id }).populate('bookings');
     let booking = new Booking();
     
     booking.storageSpace = storageSpace._id;
@@ -46,14 +46,16 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
         const context = {
             type: couponContextTypes.CUSTOMER_CLOAKROOM_BOOKING,
             booking: {
-                ...booking,
+                ...booking._doc,
                 storageSpace: storageSpace
             },
             customer: {
-                ...customer,
-                user: user
+                ...customer._doc,   // Spreading the object itself also gives me it's prototype
+                user: req.user
             }
         }
+        // console.log(context)
+        // return
         const applicableCheck = coupon.checkApplicability(context);
         if (applicableCheck.passed) {
             booking.applyCoupon(coupon);
@@ -77,7 +79,7 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
     await customer.save();
 
     res.status(201).send(booking);
-    sendNewBookingNotification(booking, storageSpace, req.user);
+    // sendNewBookingNotification(booking, storageSpace, req.user);
 })
 
 

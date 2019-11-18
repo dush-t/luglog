@@ -129,7 +129,12 @@ const checkConstraints = (context, constraint) => {
 
 couponSchema.methods.numberOfUsesBy = function (customer) {
     let numberOfUses = 0;
-    customer.bookings.forEach((booking) => {this._id.equals(booking.couponUsed) ? numberOfUses++ : null});
+    customer.bookings.forEach((booking) => {
+        if ((booking.couponUsed) && (this._id.equals(booking.couponUsed))) {
+            numberOfUses++;
+        }
+    });
+    console.log("Number of coupon uses", numberOfUses);
     return numberOfUses;
 }
 
@@ -142,11 +147,11 @@ couponSchema.methods.expired = function () {
 couponSchema.methods.checkApplicability = function (context) {
     const coupon = this;
     const constraints = JSON.parse(coupon.constraints);
-    console.log(constraints);
+    // console.log(constraints);
 
     // Check if constraints are satisfied
     const constraintsCheck = checkConstraints(context, constraints);
-    console.log(constraintsCheck);
+    // console.log(constraintsCheck);
     if (!constraintsCheck.passed) {
         return {
             ...constraintsCheck,
