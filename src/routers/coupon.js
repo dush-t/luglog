@@ -30,12 +30,24 @@ router.post('/api/getApplicableCoupons', auth, async (req, res) => {
     }
 
     // console.log(context);
+    let coupons = await Coupon.find({ isGlobal: true, visibleGlobal: true })
+    coupons = coupons.concat(customer.coupons);
 
-    let coupons = customer.coupons.filter((coupon) => coupon.checkApplicability(context).passed);
-    const globalVisibleCoupons = await Coupon.find({ isGlobal: true, visibleGlobal: true })
-    coupons = coupons.concat(globalVisibleCoupons);
+    let usableCoupons = [];
+    let unusableCoupons = []
+    coupons.forEach((coupon) => {
+        if (coupon.expired()) {
+            return;
+        }
+        if (coupon.checkApplicability(context).passed) {
+            usableCoupons.push(coupon)
+        } else {
+            unusableCoupons.push(coupon)
+        }
+    });
+    
 
-    res.status(200).send(coupons);
+    res.status(200).send({usableCoupons, unusableCoupons});
 })
 
 

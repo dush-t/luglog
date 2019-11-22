@@ -5,6 +5,7 @@ const Booking = require('../models/booking');
 const User = require('../models/user');
 const Customer = require('../models/customer');
 const Coupon = require('../models/coupon');
+const Referral = require('../models/referral');
 
 const { generateBookingId } = require('../utils/randomString');
 const { getDays } = require('../utils/dateTime');
@@ -41,8 +42,9 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
     const netStorageCost = booking.numberOfDays * 24 * booking.costPerHour * booking.numberOfBags;
     booking.netStorageCost = netStorageCost;
     
+    let coupon = null;
     if (req.body.couponId) {
-        const coupon = await Coupon.findById(req.body.couponId);
+        coupon = await Coupon.findById(req.body.couponId).populate('relatedReferral');
         const context = {
             type: couponContextTypes.CUSTOMER_CLOAKROOM_BOOKING,
             booking: {
@@ -58,8 +60,8 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
         // return
         const applicableCheck = coupon.checkApplicability(context);
         if (applicableCheck.passed) {
-            booking.applyCoupon(coupon);
-            await coupon.save();
+            await booking.applyCoupon(coupon);
+
         } else {
             return res.status(400).send({
                 status: "ERROR",
@@ -72,6 +74,12 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
     }
 
     await booking.save();
+
+    // Ugly, but necessary for the moment
+    if (req.body.couponId && coupon.relatedReferral) {
+        const referral = coupon.relatedReferral;
+        await referral.handle();
+    }
 
     // Adding the booking to the user.
     customer.isLuggageStored = true;

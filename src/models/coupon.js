@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 const Booking = require('./booking');
 const { couponContextTypes } = require('../constants/couponContextTypes');
+const { couponTypes } = require('../constants/couponTypes');
 
 const couponSchema = new mongoose.Schema({
     type: {
         type: String,
         required: true,
-        default: 'DISCOUNT'
+        default: couponTypes.DISCOUNT
     },
     value: {
         type: Number,
@@ -50,7 +51,13 @@ const couponSchema = new mongoose.Schema({
     },
     expiryTime: {
         type: Date,
-        required: true,
+        // required: true,
+        default: null
+    },
+    relatedReferral: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Referral',
+        // required: true,
         default: null
     }
 }, {
@@ -161,7 +168,7 @@ couponSchema.methods.checkApplicability = function (context) {
 
     if (context.type === couponContextTypes.CUSTOMER_CLOAKROOM_BOOKING) {
         let numberOfUses = coupon.numberOfUsesBy(context.customer);
-        if (numberOfUses >= coupon.numUsesAllowed) {
+        if (numberOfUses >= coupon.numUsesAllowed || coupon.expired()) {
             return {
                 passed: false,
                 trail: '',

@@ -1,5 +1,6 @@
 const couponTypes = {
-    DISCOUNT: 'DISCOUNT'
+    DISCOUNT: 'DISCOUNT',
+    REFERRAL_DICSOUNT: 'REFERRAL_DISCOUNT'
 }
 
 module.exports = {

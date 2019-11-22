@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
-const StorageSpace = require('../models/storageSpace');
+
+const StorageSpace = require('./storageSpace');
+const Referral = require('./referral');
+
 const { couponTypes } = require('../constants/couponTypes');
 
 const bookingSchema = new mongoose.Schema({
@@ -136,8 +139,12 @@ bookingSchema.methods.applyCoupon = async function (coupon, context) {
         this.couponUsed = coupon._id;
         if (coupon.numberOfUsesBy(context.customer) === (coupon.numUsesAllowed - 1)) {
             coupon.used = true
+            await coupon.save()
         }
     }
+
+    // Not handling the referral here because I want the booking to be saved before giving
+    // out any coupons.
 }
 
 

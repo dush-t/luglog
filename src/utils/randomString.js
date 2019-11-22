@@ -35,6 +35,15 @@ const generateBookingId = () => {
 
 const generateRandomInt = (min, max) => {
     return Math.round(Math.random() * (max - min) + min);
+    
+}
+
+const generateCouponCode = () => {
+    let couponCode = '';
+    for (i = 0; i < 2; i++) {
+        couponCode += Math.random().toString(36).substring(2,8)
+    }
+    return `${Date.now()}_${couponCode}`;
 }
 
 module.exports = {
@@ -42,5 +51,6 @@ module.exports = {
     generatePaytmOrderId,
     generateRazorpayRecieptId,
     generateBookingId,
-    generateRandomInt
+    generateRandomInt,
+    generateCouponCode
 }
