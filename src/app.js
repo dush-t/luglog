@@ -41,8 +41,12 @@ const graphqlServer = new ApolloServer({
 
 
 // SETUP MEDIA DIRECTORY
-const mediaDir = path.join(__dirname, '../public');
-app.use(express.static(mediaDir));
+if (process.env.PRODUCTION_MODE) {
+    app.use(express.static('public'))
+} else {
+    const mediaDir = path.join(__dirname, '../public');
+    app.use(express.static(mediaDir));
+}
 
 
 // SETUP SENTRY
