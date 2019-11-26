@@ -248,14 +248,14 @@ router.get('/users/migrate', async (req, res) => {
     const users = await User.find({})
     for (let i = 0; i < users.length; i++) {
         const user = users[i];
-        // const customer = new Customer({
-        //     user: user._id,
-        //     bookings: user.bookings.slice(),
-        //     isLuggageStored: user.is_luggage_stored,
-        //     forgotPasswordOTP: '',
-        //     coupons: []
-        // });
-        // await customer.save();
+        const customer = new Customer({
+            user: user._id,
+            bookings: user.bookings.slice(),
+            isLuggageStored: user.is_luggage_stored,
+            forgotPasswordOTP: '',
+            coupons: []
+        });
+        await customer.save();
         user.type = 'CUSTOMER';
         await user.save();
         console.log(user._id, user.name, user.mobile_number);
