@@ -1,5 +1,6 @@
 /node_modules/*
 /docker/*
+/public/*
 docker-compose.yml
 Dockerfile
 /src/test.js

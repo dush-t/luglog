@@ -42,9 +42,11 @@ router.post('/users', async (req, res) => {
             if (req.body.referralCode) {
                 const referral = await Referral.findOne({ code: req.body.referralCode })
                 const coupon = await referral.generateCoupon();
+                console.log(coupon)
                 customer.coupons = customer.coupons.concat(coupon._id);
             }
             await customer.save();
+            console.log('customer saved')
         }
 
         sendWelcomeEmail(user.email, user.name);

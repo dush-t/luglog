@@ -32,6 +32,11 @@ const userSchema = new mongoose.Schema({
             }
         }
     },
+    mobile_number_countryCode: {
+        type: String,
+        required: true,
+        default: '91'
+    },
     uniqueId: {
         type: String
     },

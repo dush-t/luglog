@@ -34,6 +34,7 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
     booking.schemaVersion = 1;
     booking.bookingId = generateBookingId();
     booking.userGovtId = req.body.userGovtId;
+    booking.userGovtIdType = req.body.userGovtIdType;
     booking.bookingPersonName = req.body.bookingPersonName;
     booking.numberOfDays = getDays(req.body.checkInTime.toString(), req.body.checkOutTime.toString()); 
 

@@ -10,6 +10,7 @@ const Image = require('./models/image');
 const Coupon = require('./models/coupon');
 const Customer = require('./models/customer');
 const Referral = require('./models/referral');
+const ReferralPartner = require('./models/referralPartner');
 
 // SETUP ADMIN PANEL
 AdminBro.registerAdapter(require('admin-bro-mongoose'))
@@ -60,7 +61,7 @@ const storageSpaceResource = {
 }
 
 const adminBro = new AdminBro({
-    resources: [userResource, Area, Booking, storageSpaceResource, Transaction, Image, Coupon, Referral, Customer],
+    resources: [userResource, Area, Booking, storageSpaceResource, Transaction, Image, Coupon, Referral, Customer, ReferralPartner],
     rootPath: '/admin',
     branding: {
         companyName: 'GoLuggageFree',

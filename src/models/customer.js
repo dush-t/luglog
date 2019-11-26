@@ -23,6 +23,15 @@ const customerSchema = new mongoose.Schema({
     couponsUsed: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Coupon'
+    }],
+    govtIds: [{
+        idType: {
+            type: String,
+            default: 'Aadhar'
+        },
+        idValue: {
+            type: String
+        }
     }]
 })
 

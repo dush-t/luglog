@@ -8,6 +8,9 @@ const path = require('path');
 const hbs = require('hbs');
 const cors = require('cors'); // no harm, for now
 
+const { getToken } = require('./utils/cashfree');
+getToken();
+
 // For authentication in graphql
 const User = require('./models/user');
 
@@ -38,8 +41,8 @@ const graphqlServer = new ApolloServer({
 
 
 // SETUP MEDIA DIRECTORY
-// const mediaDir = path.join(__dirname, 'public/images');
-app.use(express.static('public'));
+const mediaDir = path.join(__dirname, '../public');
+app.use(express.static(mediaDir));
 
 
 // SETUP SENTRY
@@ -63,6 +66,7 @@ const imageRouter = require('./routers/image');
 const transactionRouter = require('./routers/transaction');
 const couponRouter = require('./routers/coupon');
 const loggingRouter = require('./routers/logging');
+const referralPartnerRouter = require('./routers/referralPartner');
 
 
 // SETUP LOGGING MIDDLEWARE
@@ -96,6 +100,7 @@ app.use(bookingRouter);
 app.use(imageRouter);
 app.use(transactionRouter);
 app.use(couponRouter);
+app.use(referralPartnerRouter);
 app.use(Sentry.Handlers.errorHandler());
 app.use(loggingRouter);
 

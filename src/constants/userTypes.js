@@ -1,5 +1,6 @@
 const userTypes = {
-    CUSTOMER: 'CUSTOMER'
+    CUSTOMER: 'CUSTOMER',
+    REFERRAL_PARTNER: 'REFERRAL_PARTNER'
 }
 
 module.exports = {

@@ -4,6 +4,7 @@ const StorageSpace = require('./storageSpace');
 const Referral = require('./referral');
 
 const { couponTypes } = require('../constants/couponTypes');
+const { userGovtIdTypes } = require('../constants/userGovtIdTypes');
 
 const bookingSchema = new mongoose.Schema({
     storageSpace: {
@@ -65,7 +66,13 @@ const bookingSchema = new mongoose.Schema({
     },
     userGovtId: {
         type: String,
-        required: true
+        required: true,
+        default: userGovtIdTypes.AADHAR
+    },
+    userGovtIdType: {
+        type: String,
+        required: true,
+        default: ''
     },
     bookingPersonName: {
         type: String,

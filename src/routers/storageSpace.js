@@ -101,8 +101,6 @@ router.patch('/api/storageSpace/:space_id', auth, adminAccess, async (req, res) 
 
 router.get('/api/storageSpaces', async (req, res) => {
     const storageSpaces = await StorageSpace.find({}).populate('area')
-    // console.log(storageSpaces);
-    // await storageSpaces.populate('area').execPopulate();
     res.status(200).send(storageSpaces);
 })
 
@@ -119,8 +117,22 @@ router.get('/api/storageSpace/:space_id', async (req, res) => {
 })
 
 
+router.get('/migrateStorageSpaces', async (req, res) => {
+    const storageSpaces = await StorageSpace.find({})
+    for (let i = 0; i < storageSpaces.length; i++) {
+        const s = storageSpaces[i];
+        s.storeImages = []
+        await s.save()
+    }
+    return res.send(storageSpaces);
+})
 
-
+router.post('/addStoreImage/:space_id', async (req, res) => {
+    const storageSpace = await StorageSpace.findById(req.params.space_id);
+    storageSpace.storeImages.push(req.body.imageurl.toString());
+    await storageSpace.save();
+    res.status(200).send(storageSpace);
+})
 
 
 module.exports = router;

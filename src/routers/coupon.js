@@ -37,7 +37,8 @@ router.post('/api/getApplicableCoupons', auth, async (req, res) => {
     let unusableCoupons = []
     coupons.forEach((coupon) => {
         if (coupon.expired()) {
-            return;
+            return;     // No point sending coupons that can NEVER Be used.
+            // await coupon.delete()?
         }
         if (coupon.checkApplicability(context).passed) {
             usableCoupons.push(coupon)
