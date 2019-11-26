@@ -1,4 +1,8 @@
 /node_modules/*
 /docker/*
+/public/*
 docker-compose.yml
 Dockerfile
+/src/test.js
+/src/start.sh
+/src/changeSchema.js

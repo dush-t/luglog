@@ -3,6 +3,9 @@ const express = require('express');
 const StorageSpace = require('../models/storageSpace');
 const Booking = require('../models/booking');
 const User = require('../models/user');
+const Customer = require('../models/customer');
+const Coupon = require('../models/coupon');
+const Referral = require('../models/referral');
 
 const { generateBookingId } = require('../utils/randomString');
 const { getDays } = require('../utils/dateTime');
@@ -11,16 +14,19 @@ const { sendNewBookingNotification } = require('../utils/slack');
 const auth = require('../middleware/auth');
 // const imageUpload = require('../utils/imageUpload');
 
+const { couponContextTypes } = require('../constants/couponContextTypes');
+
 const router = new express.Router();
 
 
 // CREATE A BOOKING
 router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
     const storageSpace = await StorageSpace.findById(req.params.space_id);
+    const customer = await Customer.findOne({ user: req.user._id }).populate('bookings');
     let booking = new Booking();
     
     booking.storageSpace = storageSpace._id;
-    booking.consumer = req.user._id;
+    booking.consumer = customer._id;
     booking.checkInTime = new Date(req.body.checkInTime.toString());
     booking.checkOutTime = new Date(req.body.checkOutTime.toString())   // req.body.checkOutTime needs to be an ISO 8601 date string.
     booking.costPerHour = storageSpace.costPerHour;
@@ -28,6 +34,7 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
     booking.schemaVersion = 1;
     booking.bookingId = generateBookingId();
     booking.userGovtId = req.body.userGovtId;
+    booking.userGovtIdType = req.body.userGovtIdType;
     booking.bookingPersonName = req.body.bookingPersonName;
     booking.numberOfDays = getDays(req.body.checkInTime.toString(), req.body.checkOutTime.toString()); 
 
@@ -35,15 +42,53 @@ router.post('/api/bookings/:space_id/book', auth, async (req, res) => {
     // Doing this here because this is temporary and I don't have a lot of time.
     const netStorageCost = booking.numberOfDays * 24 * booking.costPerHour * booking.numberOfBags;
     booking.netStorageCost = netStorageCost;
+    
+    let coupon = null;
+    if (req.body.couponId) {
+        coupon = await Coupon.findById(req.body.couponId).populate('relatedReferral');
+        const context = {
+            type: couponContextTypes.CUSTOMER_CLOAKROOM_BOOKING,
+            booking: {
+                ...booking._doc,
+                storageSpace: storageSpace
+            },
+            customer: {
+                ...customer._doc,   // Spreading the object itself also gives me it's prototype
+                user: req.user
+            }
+        }
+        // console.log(context)
+        // return
+        const applicableCheck = coupon.checkApplicability(context);
+        if (applicableCheck.passed) {
+            await booking.applyCoupon(coupon);
+
+        } else {
+            return res.status(400).send({
+                status: "ERROR",
+                level: "CRITICAL",
+                displayType: "ALERT",
+                title: "Invalid Coupon",
+                description: "This coupon is not applicable to this booking"
+            })
+        }
+    }
+
     await booking.save();
 
+    // Ugly, but necessary for the moment
+    if (req.body.couponId && coupon.relatedReferral) {
+        const referral = coupon.relatedReferral;
+        await referral.handle();
+    }
+
     // Adding the booking to the user.
-    req.user.is_luggage_stored = true;
-    req.user.bookings.push(booking._id);
-    await req.user.save();
+    customer.isLuggageStored = true;
+    customer.bookings = customer.bookings.concat(booking._id);
+    await customer.save();
 
     res.status(201).send(booking);
-    sendNewBookingNotification(booking, storageSpace, req.user);
+    // sendNewBookingNotification(booking, storageSpace, req.user);
 })
 
 
@@ -58,7 +103,7 @@ router.get('/api/bookings', auth, async (req, res) => {
         }
     }).populate({
         path: 'consumer',
-        model: 'User',
+        model: 'Customer',
         select: 'name'
     }).populate({
         path: 'transaction',
@@ -89,7 +134,7 @@ router.get('/api/booking/:booking_id', auth, async (req, res) => {
         }
     }).populate({
         path: 'consumer',
-        model: 'User',
+        model: 'Customer',
         select: 'name'
     }).populate({
         path: 'transaction',

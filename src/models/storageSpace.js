@@ -19,9 +19,6 @@ const storageSpaceSchema = new mongoose.Schema({
         required: true,
         default: 6969696969
     },
-    avatar: {
-        type: Buffer,
-    },
     area: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Area'
@@ -54,8 +51,7 @@ const storageSpaceSchema = new mongoose.Schema({
         default: true
     },
     storeImages: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Image'
+        type: String
     }],
     address: {
         type: String,
@@ -82,8 +78,7 @@ const storageSpaceSchema = new mongoose.Schema({
         default: "10 PM"
     },
     ownerImage: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Image"
+        type: String
     },
     timings: {
         type: String,

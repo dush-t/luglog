@@ -3,6 +3,8 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+const { userTypes } = require('../constants/userTypes');
+
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -30,6 +32,11 @@ const userSchema = new mongoose.Schema({
             }
         }
     },
+    mobile_number_countryCode: {
+        type: String,
+        required: true,
+        default: '91'
+    },
     uniqueId: {
         type: String
     },
@@ -37,9 +44,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-    },
-    avatar: {
-        type: Buffer
     },
     tokens: [{
         token: {
@@ -62,6 +66,15 @@ const userSchema = new mongoose.Schema({
     }],
     forgotPasswordOTP: {
         type: String
+    },
+    coupons: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Coupon'
+    }],
+    type: {
+        type: String,
+        required: true,
+        default: userTypes.CUSTOMER
     }
 }, {
     timestamps: true

@@ -1,5 +1,10 @@
 const mongoose = require('mongoose');
-const StorageSpace = require('../models/storageSpace');
+
+const StorageSpace = require('./storageSpace');
+const Referral = require('./referral');
+
+const { couponTypes } = require('../constants/couponTypes');
+const { userGovtIdTypes } = require('../constants/userGovtIdTypes');
 
 const bookingSchema = new mongoose.Schema({
     storageSpace: {
@@ -61,7 +66,13 @@ const bookingSchema = new mongoose.Schema({
     },
     userGovtId: {
         type: String,
-        required: true
+        required: true,
+        default: userGovtIdTypes.AADHAR
+    },
+    userGovtIdType: {
+        type: String,
+        required: true,
+        default: ''
     },
     bookingPersonName: {
         type: String,
@@ -71,6 +82,11 @@ const bookingSchema = new mongoose.Schema({
         type: Number,
         required: true,
         default: 1
+    },
+    couponUsed: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Coupon',
+        default: null
     }
 }, {
     timestamps: true,
@@ -121,6 +137,21 @@ bookingSchema.methods.approveCheckout = async function () {
     await targetStorageSpace.save();
     await this.save();
     return this;
+}
+
+
+bookingSchema.methods.applyCoupon = async function (coupon, context) {
+    if (coupon.type === couponTypes.DISCOUNT) {
+        this.netStorageCost = this.netStorageCost * (1 - coupon.value/100);
+        this.couponUsed = coupon._id;
+        if (coupon.numberOfUsesBy(context.customer) === (coupon.numUsesAllowed - 1)) {
+            coupon.used = true
+            await coupon.save()
+        }
+    }
+
+    // Not handling the referral here because I want the booking to be saved before giving
+    // out any coupons.
 }
 
 

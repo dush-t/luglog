@@ -1,5 +1,6 @@
 const Booking = require('../../models/booking');
 const User = require('../../models/user');
+const Customer = require('../../models/customer');
 
 const resolver = {
     Query: {
@@ -13,9 +14,12 @@ const resolver = {
     },
 
     User: {
-        async bookings(parent) {
-            const bookings = await Booking.find({ consumer: parent._id })
-            return bookings;
+        async customer(parent) {
+            if (parent.type === 'CUSTOMER') {
+                const customer = Customer.findOne({ user: parent._id })
+                return customer;
+            }
+            return null
         }
     }
 }

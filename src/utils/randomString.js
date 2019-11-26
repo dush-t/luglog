@@ -35,6 +35,32 @@ const generateBookingId = () => {
 
 const generateRandomInt = (min, max) => {
     return Math.round(Math.random() * (max - min) + min);
+    
+}
+
+const generateCouponCode = () => {
+    let couponCode = '';
+    for (i = 0; i < 2; i++) {
+        couponCode += Math.random().toString(36).substring(2,8)
+    }
+    return `${Date.now()}_${couponCode}`;
+}
+
+const generateCashfreeBeneId = (phoneNumber) => {
+    let beneId = phoneNumber.toString() + '_';
+    for (i = 0; i < 2; i++) {
+        beneId += Math.random().toString(36).substring(2, 15); // don't ask.
+    }
+    beneId = beneId.substring(0, 15);
+    return beneId;
+}
+
+const generateReferralCode = () => {
+    let referralCode = '';
+    for (i = 0; i < 2; i++) {
+        referralCode += Math.random().toString(36).substring(2,8)
+    }
+    return referralCode.substring(0, 6);
 }
 
 module.exports = {
@@ -42,5 +68,8 @@ module.exports = {
     generatePaytmOrderId,
     generateRazorpayRecieptId,
     generateBookingId,
-    generateRandomInt
+    generateRandomInt,
+    generateCouponCode,
+    generateCashfreeBeneId,
+    generateReferralCode
 }

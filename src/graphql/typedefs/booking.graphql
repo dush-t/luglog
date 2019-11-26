@@ -8,7 +8,7 @@ type Booking {
     checkOutTime: String
     netStorageCost: String
     transaction: Transaction
-    bookingID: String
+    bookingId: String
     userGovtId: String
     bookingPersonName: String
     numberOfDays: String

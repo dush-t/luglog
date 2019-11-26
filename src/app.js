@@ -3,10 +3,13 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const multer = require('multer');
+// const multer = require('multer');
 const path = require('path');
 const hbs = require('hbs');
 const cors = require('cors'); // no harm, for now
+
+const { getToken } = require('./utils/cashfree');
+getToken();
 
 // For authentication in graphql
 const User = require('./models/user');
@@ -26,9 +29,8 @@ const graphqlServer = new ApolloServer({
         let currentUser = null;
         try {
             authToken = req.header('Authorization').replace('Bearer', '');
-            currentUser = User.findByToken(authToken);
+            currentUser = await User.findByToken(authToken);
         } catch (e) {
-            console.log('Unable to authenticate user!')
         }
         return {
             authToken,
@@ -38,6 +40,10 @@ const graphqlServer = new ApolloServer({
 });
 
 
+// SETUP MEDIA DIRECTORY
+const mediaDir = path.join(__dirname, '../public');
+app.use(express.static(mediaDir));
+
 
 // SETUP SENTRY
 const Sentry = require('@sentry/node');
@@ -45,7 +51,7 @@ Sentry.init({ dsn: process.env.SENTRY_DSN })
 app.use(Sentry.Handlers.requestHandler());
 
 
-const upload = multer();
+// const upload = multer();
 
 // OPEN DATABASE CONNECTION
 require('./db/mongoose');
@@ -58,7 +64,9 @@ const bookingRouter = require('./routers/booking');
 const areaRouter = require('./routers/area');
 const imageRouter = require('./routers/image');
 const transactionRouter = require('./routers/transaction');
+const couponRouter = require('./routers/coupon');
 const loggingRouter = require('./routers/logging');
+const referralPartnerRouter = require('./routers/referralPartner');
 
 
 // SETUP LOGGING MIDDLEWARE
@@ -75,7 +83,7 @@ app.set('views', viewsPath);
 // SETUP REQUEST-PARSING MIDDLEWARE
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(upload.array()); 
+// app.use(upload.array()); 
 
 // SETUP CORS MIDDLEWARE
 app.use(cors());
@@ -91,6 +99,8 @@ app.use(storageSpaceRouter);
 app.use(bookingRouter);
 app.use(imageRouter);
 app.use(transactionRouter);
+app.use(couponRouter);
+app.use(referralPartnerRouter);
 app.use(Sentry.Handlers.errorHandler());
 app.use(loggingRouter);
 

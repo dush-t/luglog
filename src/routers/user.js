@@ -4,6 +4,8 @@ const sharp = require('sharp');
 const sendotp = require('sendotp');
 
 const User = require('../models/user');
+const Customer = require('../models/customer');
+const Referral = require('../models/referral');
 
 const auth = require('../middleware/auth');
 
@@ -12,15 +14,41 @@ const {sendSMS} = require('../utils/sms');
 const {generateUUID, generateRandomInt} = require('../utils/randomString');
 const { sendNewUserNotification } = require('../utils/slack');
 
+const { userTypes } = require('../constants/userTypes');
+
 const router = new express.Router();
 
 
 router.post('/users', async (req, res) => {
-    const user = new User(req.body);
-    user.uniqueId = generateUUID(req.body.mobile_number);
-
     try {
+        const user = new User({
+            name: req.body.name,
+            email: req.body.email,
+            mobile_number: req.body.mobile_number,
+            password: req.body.password,
+            uniqueId: generateUUID(req.body.mobile_number)
+        });
+
         await user.save();
+
+        if (req.body.userType === userTypes.CUSTOMER) {
+            const customer = new Customer({
+                user: user._id,
+                bookings: [],
+                coupons: [],
+                couponsUsed: []
+            })
+            
+            if (req.body.referralCode) {
+                const referral = await Referral.findOne({ code: req.body.referralCode })
+                const coupon = await referral.generateCoupon();
+                console.log(coupon)
+                customer.coupons = customer.coupons.concat(coupon._id);
+            }
+            await customer.save();
+            console.log('customer saved')
+        }
+
         sendWelcomeEmail(user.email, user.name);
         const token = await user.generateAuthToken();
         res.status(201).send({ user: user, token: token });
@@ -214,6 +242,42 @@ router.get('/users/:id/avatar', async (req, res) => {
     } catch (e) {
 
     }
+})
+
+router.get('/users/migrate', async (req, res) => {
+    const users = await User.find({})
+    for (let i = 0; i < users.length; i++) {
+        const user = users[i];
+        // const customer = new Customer({
+        //     user: user._id,
+        //     bookings: user.bookings.slice(),
+        //     isLuggageStored: user.is_luggage_stored,
+        //     forgotPasswordOTP: '',
+        //     coupons: []
+        // });
+        // await customer.save();
+        user.type = 'CUSTOMER';
+        await user.save();
+        console.log(user._id, user.name, user.mobile_number);
+    }
+    res.send(users);
+})
+
+router.get('/users/migrateUser/:_id', async (req, res) => {
+    console.log('function called')
+    const user = await User.findOne({ _id: req.params._id });
+    console.log('user found')
+    const customer = new Customer({
+        user: user._id,
+        bookings: user.bookings.slice(),
+        isLuggageStored: user.is_luggage_stored,
+        forgotPassword: '',
+        coupons: []
+    });
+    await customer.save();
+    console.log('customer saved')
+    console.log(customer._id);
+    res.send(customer)
 })
 
 
