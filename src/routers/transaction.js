@@ -3,8 +3,8 @@ const Razorpay = require('razorpay');
 
 const Booking = require('../models/booking');
 const Transaction = require('../models/transaction');
-const Customer = require('../models/Customer');
-const Coupon = require('../models/Coupon');
+const Customer = require('../models/customer');
+const Coupon = require('../models/coupon');
 
 const { sendSMS } = require('../utils/sms');
 const { sendBookingEmailToSpace, sendBookingEmailToUser } = require('../utils/email');

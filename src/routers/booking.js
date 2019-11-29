@@ -14,6 +14,7 @@ const { sendNewBookingNotification } = require('../utils/slack');
 
 const auth = require('../middleware/auth');
 const versionCheck = require('../middleware/versionCheck');
+const adminAccess = require('../middleware/adminAccess');
 // const imageUpload = require('../utils/imageUpload');
 
 const { couponContextTypes } = require('../constants/couponContextTypes');
