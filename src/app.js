@@ -51,7 +51,10 @@ if (process.env.PRODUCTION_MODE) {
 
 // SETUP SENTRY
 const Sentry = require('@sentry/node');
-Sentry.init({ dsn: process.env.SENTRY_DSN })
+Sentry.init({ 
+    dsn: process.env.SENTRY_DSN,
+    release: process.env.SENTRY_PROJECT_VERSION
+})
 app.use(Sentry.Handlers.requestHandler());
 
 
