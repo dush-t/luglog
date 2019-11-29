@@ -24,7 +24,14 @@ const router = new express.Router();
 // CREATE A BOOKING
 router.post('/api/bookings/:space_id/book', versionCheck, auth, async (req, res) => {
 	const storageSpace = await StorageSpace.findById(req.params.space_id).populate('area');
-	const customer = await Customer.findOne({ user: req.user._id }).populate('bookings');
+	const customer = await Customer.findOne({ user: req.user._id }).populate({
+		path: 'bookings',
+		model: 'Booking',
+		populate: {
+			path: 'transaction',
+			model: 'Transaction'
+		}
+	});
 	let booking = new Booking();
 	
 	booking.storageSpace = storageSpace._id;
@@ -60,7 +67,7 @@ router.post('/api/bookings/:space_id/book', versionCheck, auth, async (req, res)
 			}
 		}
 
-		const applicableCheck = coupon.checkApplicability(context);
+		const applicableCheck = await coupon.checkApplicability(context);
 		console.log(applicableCheck);
 		if (applicableCheck.passed) {
 			await booking.applyCoupon(coupon, context);

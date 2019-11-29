@@ -18,9 +18,15 @@ const router = new express.Router();
 router.post('/api/getApplicableCoupons', versionCheck, auth, async (req, res) => {
     console.log(req.body);
     const user = req.user;
-    let customer = await Customer.findOne({ user: user._id}).populate('coupons').populate('bookings');
+    let customer = await Customer.findOne({ user: user._id}).populate('coupons').populate({
+        path: 'bookings',
+        model: 'Booking',
+        populate: {
+            path: 'transactions',
+            model: 'Transaction'
+        }
+    });
     customer.user = user
-    // console.log('customer found', customer)
     let booking = req.body.booking;
     const storageSpace = await StorageSpace.findById(booking.storageSpace);
     booking.storageSpace = storageSpace
@@ -31,7 +37,6 @@ router.post('/api/getApplicableCoupons', versionCheck, auth, async (req, res) =>
         customer
     }
 
-    // console.log(context);
     let coupons = await Coupon.find({ isGlobal: true, visibleGlobal: true })
     coupons = coupons.concat(customer.coupons);
 
@@ -44,7 +49,7 @@ router.post('/api/getApplicableCoupons', versionCheck, auth, async (req, res) =>
             return;     // No point sending coupons that can NEVER Be used.
             // await coupon.delete()?
         }
-        if (coupon.checkApplicability(context).passed) {
+        if ((coupon.checkApplicability(context)).passed) {
             usableCoupons.push(couponObj)
         } else {
             unusableCoupons.push(couponObj)
