@@ -22,7 +22,7 @@ const router = new express.Router()
 
 
 
-router.post('/api/addReferralPartner', async (req, res) => {
+router.post('/api/addReferralPartner', adminAccess, async (req, res) => {
 
     const userParams = {
         name: req.body.name,
@@ -57,7 +57,7 @@ router.post('/api/addReferralPartner', async (req, res) => {
     })
 
 
-    await axios.post('https://payout-gamma.cashfree.com/payout/v1/addBeneficiary', {
+    await axios.post(`${process.env.CASHFREE_BASE_URL}/payout/v1/addBeneficiary`, {
         ...cashfreeData,
         address1: req.body.address,
         name: user.name,

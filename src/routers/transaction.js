@@ -1,19 +1,23 @@
 const express = require('express');
+const Razorpay = require('razorpay');
+
 const Booking = require('../models/booking');
 const Transaction = require('../models/transaction');
-const Razorpay = require('razorpay');
+const Customer = require('../models/Customer');
+const Coupon = require('../models/Coupon');
+
 const { sendSMS } = require('../utils/sms');
 const { sendBookingEmailToSpace, sendBookingEmailToUser } = require('../utils/email');
-
+const { generateRazorpayRecieptId } = require('../utils/randomString');
 
 const auth = require('../middleware/auth');
+const versionCheck = require('../middleware/versionCheck');
 
-const { generateRazorpayRecieptId } = require('../utils/randomString');
 
 
 const router = new express.Router()
 
-router.post('/api/payFor/:booking_id', auth, async (req, res) => {
+router.post('/api/payFor/:booking_id', versionCheck, auth, async (req, res) => {
     const booking = await Booking.findById(req.params.booking_id);
 
     const receiptId = generateRazorpayRecieptId(req.user.mobile_number);
@@ -65,6 +69,51 @@ router.post('/api/payFor/:booking_id', auth, async (req, res) => {
 });
 
 
+router.post('/api/confirmAppPayment', versionCheck, auth, async (req, res) => {
+    const transaction = await Transaction.findById(req.body.transaction_id).populate('user');
+    const booking = await Booking.findOne({ transaction: transaction._id }).populate('storageSpace');
+    const customer = await Customer.findOne({ user: user._id });
+
+    // Only allow customer to pay for recently made bookings.
+    if (!booking._id.equals(customer.lastBooking)) {
+        // VERY SUSPICIOUS ACTIVITY
+        return res.status(403).send();
+    }
+
+    if (!transaction) {
+        return res.status(404).send();
+    }
+
+    const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
+    console.log(razorpay_payment_id, razorpay_order_id, razorpay_signature);
+
+
+    if (transaction.hasValidSignature(razorpay_order_id, razorpay_payment_id, razorpay_signature)) {
+        console.log('Inside transaction-update block');
+        transaction.razorpayOrderId = razorpay_order_id;
+        transaction.razorpayPaymentId = razorpay_payment_id;
+        transaction.status = 'COMPLETE';
+        await transaction.save();
+        
+        // Handle the referral through which booking was made
+        if (booking.couponUsed) {
+            const coupon = await Coupon.findById(booking.couponUsed).populate('relatedReferral');
+            if (coupon.relatedReferral) {
+                const referral = coupon.relatedReferral;
+                await referral.handle(booking);
+            }
+        }
+
+        // Send booking emails
+        sendBookingEmailToSpace(booking.storageSpace.email, {storageSpace: booking.storageSpace, booking: booking, user: transaction.user});
+        sendBookingEmailToUser(transaction.user.email, {storageSpace: booking.storageSpace, booking: booking, user: transaction.user});
+
+    }
+
+    return res.status(200).send(transaction);
+})
+
+
 // Paytm will send info to this endpoint on transaction completion
 router.post('/api/confirmPayment/:transaction_id', async (req, res) => {
     
@@ -83,13 +132,8 @@ router.post('/api/confirmPayment/:transaction_id', async (req, res) => {
             model: 'StorageSpace'
         }
     });
-
-    var instance = new Razorpay({
-        key_id: process.env.RAZORPAY_ID,
-        key_secret: process.env.RAZORPAY_SECRET
-    })
     
-    if (transaction.hasValidSignature(razorpay_order_id, razorpay_payment_id, razorpay_signature)) {
+    if (Transaction.hasValidSignature(razorpay_order_id, razorpay_payment_id, razorpay_signature)) {
         transaction.status = 'COMPLETE';
         await transaction.save();
         console.log(transaction.booking[0]);

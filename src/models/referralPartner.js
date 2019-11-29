@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { cashfreeModeTypes } = require('../constants/cashfreeModeTypes');
 
 const referralPartnerSchema = new mongoose.Schema({
     address: {
@@ -8,6 +9,10 @@ const referralPartnerSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
+    },
+    cashbackAmount: {
+        type: Number,
+        default: 10
     },
     cashfreeData: {
         beneId: {
@@ -39,6 +44,10 @@ const referralPartnerSchema = new mongoose.Schema({
         },
         pincode: {
             type: String
+        },
+        transferMode: {
+            type: String,
+            default: cashfreeModeTypes.PAYTM
         }
     }
 })

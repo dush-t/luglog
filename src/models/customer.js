@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const autopopulate = require('mongoose-autopopulate');
 
 const customerSchema = new mongoose.Schema({
     user: {
@@ -7,7 +8,8 @@ const customerSchema = new mongoose.Schema({
     },
     bookings: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Booking'
+        ref: 'Booking',
+        autopopulate: true
     }],
     isLuggageStored: {
         type: Boolean,
@@ -32,10 +34,15 @@ const customerSchema = new mongoose.Schema({
         idValue: {
             type: String
         }
-    }]
+    }],
+    latestBooking: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Booking'
+    }
 })
 
 customerSchema.index({ user: 1 });
+customerSchema.plugin(autopopulate);
 
 const Customer = mongoose.model('Customer', customerSchema);
 

@@ -102,6 +102,10 @@ const checkConstraints = (context, constraint) => {
         const fields = Object.keys(constraint);
         
         let constraintPassed = fields.every((field) => {
+            if (!Object.keys(context).includes(field)) {
+                trail = context['paperTrail'] + `>${field}`
+                return false
+            }
             context[field]['paperTrail'] = context.paperTrail + `>${field}`;
 
             if (constraint[field].type) {
@@ -136,8 +140,9 @@ const checkConstraints = (context, constraint) => {
 
 couponSchema.methods.numberOfUsesBy = function (customer) {
     let numberOfUses = 0;
+    await customer.bookings.populate('transaction').execPopulate();
     customer.bookings.forEach((booking) => {
-        if ((booking.couponUsed) && (this._id.equals(booking.couponUsed))) {
+        if ((booking.couponUsed) && (this._id.equals(booking.couponUsed)) && (booking.transaction.status === 'COMPLETE')) {
             numberOfUses++;
         }
     });

@@ -11,10 +11,11 @@ const auth = require('../middleware/auth');
 
 const {sendWelcomeEmail} = require('../utils/email');
 const {sendSMS} = require('../utils/sms');
-const {generateUUID, generateRandomInt} = require('../utils/randomString');
+const {generateUUID, generateRandomInt, generateReferralCode} = require('../utils/randomString');
 const { sendNewUserNotification } = require('../utils/slack');
 
 const { userTypes } = require('../constants/userTypes');
+const { referralTypes } = require('../constants/referralTypes');
 
 const router = new express.Router();
 
@@ -26,11 +27,13 @@ router.post('/users', async (req, res) => {
             email: req.body.email,
             mobile_number: req.body.mobile_number,
             password: req.body.password,
+            mobile_number_countryCode: req.body.mobile_number_countryCode,
             uniqueId: generateUUID(req.body.mobile_number)
         });
 
         await user.save();
 
+        let response = {user: user}
         if (req.body.userType === userTypes.CUSTOMER) {
             const customer = new Customer({
                 user: user._id,
@@ -46,12 +49,21 @@ router.post('/users', async (req, res) => {
                 customer.coupons = customer.coupons.concat(coupon._id);
             }
             await customer.save();
+            response.customer = customer;
             console.log('customer saved')
         }
 
+        const referral = new Referral({
+            type: referralTypes.CUSTOMER_TO_CUSTOMER,
+            user: user._id,
+            code: generateReferralCode()
+        })
+        await referral.save();
+
         sendWelcomeEmail(user.email, user.name);
         const token = await user.generateAuthToken();
-        res.status(201).send({ user: user, token: token });
+        response.token = token
+        res.status(201).send(response);
         sendNewUserNotification(user);
     } catch (e) {
         console.log(e);
@@ -65,7 +77,12 @@ router.post('/users/login', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.phone_number, req.body.password);
         const token = await user.generateAuthToken();
-        res.send({ user: user, token: token });
+        const response = { user: user, token: token }
+        if (user.type === userTypes.CUSTOMER) {
+            const customer = await Customer.findOne({ user: user._id });
+            response.customer = customer
+        }
+        res.send(response);
     } catch (e) {
         console.log(e);
         res.status(400).send(e)

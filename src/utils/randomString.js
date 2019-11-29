@@ -60,7 +60,15 @@ const generateReferralCode = () => {
     for (i = 0; i < 2; i++) {
         referralCode += Math.random().toString(36).substring(2,8)
     }
-    return referralCode.substring(0, 6);
+    return referralCode.substring(0, 5).toUpperCase();
+}
+
+const generateCashfreeTransferId = () => {
+    let transferId = '';
+    for (i = 0; i < 8; i++) {
+        transferId += Math.random().toString(36).substring(2,8)
+    }
+    return transferId.substring(0,30);
 }
 
 module.exports = {
@@ -71,5 +79,6 @@ module.exports = {
     generateRandomInt,
     generateCouponCode,
     generateCashfreeBeneId,
-    generateReferralCode
+    generateReferralCode,
+    generateCashfreeTransferId
 }

@@ -14,7 +14,7 @@ const bookingSchema = new mongoose.Schema({
     },
     consumer: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: 'Customer',
         required: true
     },
     costPerHour: {
@@ -94,7 +94,7 @@ const bookingSchema = new mongoose.Schema({
 
 
 
-bookingSchema.index({ storageSpace: 1 });
+bookingSchema.index({ storageSpace: 1, transaction: 1 });
 
 
 
@@ -141,13 +141,9 @@ bookingSchema.methods.approveCheckout = async function () {
 
 
 bookingSchema.methods.applyCoupon = async function (coupon, context) {
-    if (coupon.type === couponTypes.DISCOUNT) {
+    if (coupon.type === couponTypes.DISCOUNT || couponTypes.REFERRAL_DICSOUNT) {
         this.netStorageCost = this.netStorageCost * (1 - coupon.value/100);
         this.couponUsed = coupon._id;
-        if (coupon.numberOfUsesBy(context.customer) === (coupon.numUsesAllowed - 1)) {
-            coupon.used = true
-            await coupon.save()
-        }
     }
 
     // Not handling the referral here because I want the booking to be saved before giving

@@ -1,9 +1,9 @@
 const cashfreeModeTypes = {
-    BANK_ACCOUNT: 'BANK_ACCOUNT',
-    IFSC: 'IFSC',
-    VPA: 'VPA',
-    CARD: 'CARD',
-    PAYTM: 'PAYTM'
+    BANK_ACCOUNT: 'bankaccount',
+    IFSC: 'ifsc',
+    VPA: 'vpa',
+    CARD: 'card',
+    PAYTM: 'paytm'
 }
 
 module.exports = {

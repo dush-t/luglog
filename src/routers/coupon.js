@@ -2,6 +2,7 @@ const express = require('express');
 
 const auth = require('../middleware/auth');
 const adminAccess = require('../middleware/adminAccess');
+const versionCheck = require('../middleware/versionCheck');
 
 const Customer = require('../models/customer');
 const Coupon = require('../models/coupon');
@@ -14,7 +15,8 @@ const router = new express.Router();
 
 
 // SEND LIST OF COUPONS THAT ARE APPLICABLE FOR GIVEN BOOKING
-router.post('/api/getApplicableCoupons', auth, async (req, res) => {
+router.post('/api/getApplicableCoupons', versionCheck, auth, async (req, res) => {
+    console.log(req.body);
     const user = req.user;
     let customer = await Customer.findOne({ user: user._id}).populate('coupons').populate('bookings');
     customer.user = user
@@ -36,14 +38,16 @@ router.post('/api/getApplicableCoupons', auth, async (req, res) => {
     let usableCoupons = [];
     let unusableCoupons = []
     coupons.forEach((coupon) => {
+        const couponObj = coupon.toObject();
+        delete couponObj.constraints;
         if (coupon.expired()) {
             return;     // No point sending coupons that can NEVER Be used.
             // await coupon.delete()?
         }
         if (coupon.checkApplicability(context).passed) {
-            usableCoupons.push(coupon)
+            usableCoupons.push(couponObj)
         } else {
-            unusableCoupons.push(coupon)
+            unusableCoupons.push(couponObj)
         }
     });
     
