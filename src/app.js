@@ -55,6 +55,7 @@ Sentry.init({
     dsn: process.env.SENTRY_DSN,
     release: process.env.SENTRY_PROJECT_VERSION
 })
+console.log('On version', process.env.SENTRY_PROJECT_VERSION);
 app.use(Sentry.Handlers.requestHandler());
 
 

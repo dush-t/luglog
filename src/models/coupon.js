@@ -138,7 +138,7 @@ const checkConstraints = (context, constraint) => {
 }
 
 
-couponSchema.methods.numberOfUsesBy = function (customer) {
+couponSchema.methods.numberOfUsesBy = async function (customer) {
     let numberOfUses = 0;
     await customer.bookings.populate('transaction').execPopulate();
     customer.bookings.forEach((booking) => {
@@ -172,7 +172,7 @@ couponSchema.methods.checkApplicability = function (context) {
     };
 
     if (context.type === couponContextTypes.CUSTOMER_CLOAKROOM_BOOKING) {
-        let numberOfUses = coupon.numberOfUsesBy(context.customer);
+        let numberOfUses = await coupon.numberOfUsesBy(context.customer);
         if (numberOfUses >= coupon.numUsesAllowed || coupon.expired()) {
             return {
                 passed: false,
