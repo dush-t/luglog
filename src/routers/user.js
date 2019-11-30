@@ -8,6 +8,7 @@ const Customer = require('../models/customer');
 const Referral = require('../models/referral');
 
 const auth = require('../middleware/auth');
+const adminAccess = require('../middleware/adminAccess');
 
 const {sendWelcomeEmail} = require('../utils/email');
 const {sendSMS} = require('../utils/sms');
@@ -261,7 +262,7 @@ router.get('/users/:id/avatar', async (req, res) => {
     }
 })
 
-router.get('/users/migrate', async (req, res) => {
+router.get('/users/migrate', auth, adminAccess, async (req, res) => {
     const users = await User.find({})
     for (let i = 0; i < users.length; i++) {
         const user = users[i];
@@ -280,7 +281,7 @@ router.get('/users/migrate', async (req, res) => {
     res.send(users);
 })
 
-router.get('/users/migrateUser/:_id', async (req, res) => {
+router.get('/users/migrateUser/:_id', auth, adminAccess, async (req, res) => {
     console.log('function called')
     const user = await User.findOne({ _id: req.params._id });
     console.log('user found')

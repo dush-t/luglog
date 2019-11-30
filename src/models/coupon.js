@@ -156,7 +156,13 @@ couponSchema.methods.expired = function () {
     return this.expiryTime === null ? false : (new Date) > this.expiryTime;
 }
 
-
+/*
+    Populate all fields of customer and the customer's bookings
+    before putting it into the context object for this function.
+    This is done to reduce the number of database calls. Fucks
+    the modularity, but keeps the code kinda optimized.
+    I am too inexperienced to 
+*/
 couponSchema.methods.checkApplicability = async function (context) {
     const coupon = this;
     const constraints = JSON.parse(coupon.constraints);

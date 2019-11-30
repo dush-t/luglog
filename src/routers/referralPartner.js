@@ -7,6 +7,7 @@ const User = require('../models/user');
 const Referral = require('../models/referral');
 
 // MIDDLEWARE
+const auth = require('../middleware/auth');
 const adminAccess = require('../middleware/adminAccess');
 
 // UTILS
@@ -22,7 +23,7 @@ const router = new express.Router()
 
 
 
-router.post('/api/addReferralPartner', adminAccess, async (req, res) => {
+router.post('/api/addReferralPartner', auth, adminAccess, async (req, res) => {
 
     const userParams = {
         name: req.body.name,

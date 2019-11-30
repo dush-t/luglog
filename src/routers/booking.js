@@ -165,7 +165,7 @@ router.get('/api/booking/:booking_id', auth, async (req, res) => {
 })
 
 
-router.get('/migrateBookings', adminAccess, async (req, res) => {
+router.get('/migrateBookings', auth, adminAccess, async (req, res) => {
 	const bookings = await Booking.find({});
 	for (let i = 0; i < bookings.length; i++ ) {
 		const booking = bookings[i];
