@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Booking = require('./booking');
 const { couponContextTypes } = require('../constants/couponContextTypes');
 const { couponTypes } = require('../constants/couponTypes');
+const { couponBenefitTypes } = require('../constants/couponBenefitTypes');
 
 const couponSchema = new mongoose.Schema({
     type: {
@@ -59,6 +60,15 @@ const couponSchema = new mongoose.Schema({
         ref: 'Referral',
         // required: true,
         default: null
+    },
+    maxBenefitValue: {
+        type: Number,
+        default: null
+    },
+    benefitType: {
+        type: String,
+        required: true,
+        default: couponBenefitTypes.PERCENTAGE
     }
 }, {
     timestamps: true,

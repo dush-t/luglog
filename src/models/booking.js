@@ -5,6 +5,7 @@ const Referral = require('./referral');
 
 const { couponTypes } = require('../constants/couponTypes');
 const { userGovtIdTypes } = require('../constants/userGovtIdTypes');
+const { couponBenefitTypes } = require('../constants/couponBenefitTypes');
 
 const bookingSchema = new mongoose.Schema({
     storageSpace: {
@@ -142,8 +143,14 @@ bookingSchema.methods.approveCheckout = async function () {
 
 bookingSchema.methods.applyCoupon = async function (coupon, context) {
     if (coupon.type === couponTypes.DISCOUNT || couponTypes.REFERRAL_DICSOUNT) {
-        this.netStorageCost = this.netStorageCost * (1 - coupon.value/100);
-        this.couponUsed = coupon._id;
+        if (coupon.benefitType === couponBenefitTypes.PERCENTAGE) {
+            let benefit = this.netStorageCost * (coupon.value/100)
+            if (benefit > coupon.maxBenefitValue) {
+                benefit = coupon.maxBenefitValue 
+            }
+            this.netStorageCost = this.netStorageCost - benefit
+            this.couponUsed = coupon._id;
+        }
     }
 
     // Not handling the referral here because I want the booking to be saved before giving

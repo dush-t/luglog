@@ -94,6 +94,9 @@ const tellOurselvesWeFuckedUp = (heading, message) => {
         ]
     }
     axios.post(process.env.WELLFUCK_SLACK_WEBHOOK, messageBody)
+        .then((response) => {
+            console.log('Sent wellfuck notification to slack')
+        })
 }
 
 
