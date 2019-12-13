@@ -13,7 +13,7 @@ const adminAccess = require('../middleware/adminAccess');
 const {sendWelcomeEmail} = require('../utils/email');
 const {sendSMS} = require('../utils/sms');
 const {generateUUID, generateRandomInt, generateReferralCode} = require('../utils/randomString');
-const { sendNewUserNotification } = require('../utils/slack');
+const { sendNewUserNotification, tellOurselvesWeFuckedUp } = require('../utils/slack');
 
 const { userTypes } = require('../constants/userTypes');
 const { referralTypes } = require('../constants/referralTypes');
@@ -59,13 +59,14 @@ router.post('/users', async (req, res) => {
             user: user._id,
             code: generateReferralCode()
         })
-        await referral.save();
+        await referral.save()
 
         sendWelcomeEmail(user.email, user.name);
-        const token = await user.generateAuthToken();
+        const token = await user.generateAuthToken()
         response.token = token
-        res.status(201).send(response);
-        sendNewUserNotification(user);
+        response.referralCode = referral.code
+        res.status(201).send(response)
+        sendNewUserNotification(user)
     } catch (e) {
         console.log(e);
         res.status(400).send(e)
@@ -77,12 +78,14 @@ router.post('/users', async (req, res) => {
 router.post('/users/login', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.phone_number, req.body.password);
+        console.log('user', user)
         const token = await user.generateAuthToken();
         const response = { user: user, token: token }
         if (user.type === userTypes.CUSTOMER) {
             const customer = await Customer.findOne({ user: user._id });
             response.customer = customer
         }
+        console.log('type', user.type)
         res.send(response);
     } catch (e) {
         console.log(e);
@@ -105,17 +108,6 @@ router.post('/users/logout', auth, async (req, res) => {
 });
 
 
-router.post('/users/verifyNumber', async (req, res) => {
-    const otp = req.body.otp
-    const number = req.body.number
-    const sendOTP = new sendotp(process.env.SMS_AUTHKEY);
-    sendOTP.send(number.toString(), 'GLGFre', otp, (error, data) => {
-        console.log(error);
-        console.log(data);
-    })
-    // sendSMS(number.toString(), `OTP: ${otp}`);
-})
-
 router.post('/users/forgotPasswordOTP', async (req, res) => {
     const number = req.body.number;
     const OTP = generateRandomInt(10001, 99999);
@@ -135,6 +127,10 @@ router.post('/users/verifyOTP', async (req, res) => {
     const number = req.body.number;
     const otp = req.body.otp;
     const user = await User.findOne({ mobile_number: parseInt(number) });
+    if (!user.forgotPasswordOTP) {
+        tellOurselvesWeFuckedUp('nullOTPExploit', `Someone tried to change ${user.name}'s (${number}) password without generating an OTP`);
+        return res.status(403).send();
+    }
     if (user.forgotPasswordOTP === otp.toString()) {
         return res.status(200).send({
             status: 'verified'

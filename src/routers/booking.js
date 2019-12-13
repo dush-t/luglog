@@ -24,6 +24,7 @@ const router = new express.Router();
 
 // CREATE A BOOKING
 router.post('/api/bookings/:space_id/book', versionCheck, auth, async (req, res) => {
+
 	const storageSpace = await StorageSpace.findById(req.params.space_id).populate('area');
 	const customer = await Customer.findOne({ user: req.user._id }).populate({
 		path: 'bookings',
@@ -56,6 +57,7 @@ router.post('/api/bookings/:space_id/book', versionCheck, auth, async (req, res)
 	let coupon = null;
 	if (req.body.couponId) {
 		coupon = await Coupon.findById(req.body.couponId).populate('relatedReferral');
+
 		const context = {
 			type: couponContextTypes.CUSTOMER_CLOAKROOM_BOOKING,
 			booking: {
@@ -68,7 +70,7 @@ router.post('/api/bookings/:space_id/book', versionCheck, auth, async (req, res)
 			}
 		}
 
-		const applicableCheck = await coupon.checkApplicability(context);
+		const applicableCheck = coupon.checkApplicability(context);
 		console.log(applicableCheck);
 		if (applicableCheck.passed) {
 			await booking.applyCoupon(coupon, context);

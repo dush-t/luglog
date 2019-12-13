@@ -163,7 +163,7 @@ couponSchema.methods.expired = function () {
     the modularity, but keeps the code kinda optimized.
     I am too inexperienced to 
 */
-couponSchema.methods.checkApplicability = async function (context) {
+couponSchema.methods.checkApplicability = function (context) {
     const coupon = this;
     const constraints = JSON.parse(coupon.constraints);
     // console.log(constraints);

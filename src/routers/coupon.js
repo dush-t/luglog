@@ -36,6 +36,7 @@ router.post('/api/getApplicableCoupons', versionCheck, auth, async (req, res) =>
         booking,
         customer
     }
+    // console.log(context);
 
     let coupons = await Coupon.find({ isGlobal: true, visibleGlobal: true })
     coupons = coupons.concat(customer.coupons);
@@ -49,7 +50,9 @@ router.post('/api/getApplicableCoupons', versionCheck, auth, async (req, res) =>
             return;     // No point sending coupons that can NEVER Be used.
             // await coupon.delete()?
         }
+        console.log(coupon.checkApplicability(context));
         if ((coupon.checkApplicability(context)).passed) {
+            console.log('check passed for coupon of code', coupon.code)
             usableCoupons.push(couponObj)
         } else {
             unusableCoupons.push(couponObj)

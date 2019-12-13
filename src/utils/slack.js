@@ -71,23 +71,34 @@ const sendNewBookingNotification = (booking, storageSpace, user) => {
 }
 
 
-module.exports = {
-    sendNewBookingNotification,
-    sendNewUserNotification
+const tellOurselvesWeFuckedUp = (heading, message) => {
+    const messageBody = {
+        "blocks": [
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": `*${heading}*`
+                }
+            },
+            {
+                "type": "divider"
+            },
+            {
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": message
+                }
+            }
+        ]
+    }
+    axios.post(process.env.WELLFUCK_SLACK_WEBHOOK, messageBody)
 }
 
-// sendNewBookingNotification({
-//     numberOfBags: 1,
-//     numberOfDays: 2,
-//     netStorageCost: 160,
-//     checkInTime: new Date(),
-//     checkOutTime: new Date(),
-//     bookingId: "GS79MA"
-// },{
-//     name: "Book India Trip"
-// },{
-//     name: "Dushyant Yadav",
-//     email: "dushyant9309@gmail.com",
-//     mobile_number: "6377653833",
-//     _id: "abcd"
-// })
+
+module.exports = {
+    sendNewBookingNotification,
+    sendNewUserNotification,
+    tellOurselvesWeFuckedUp
+}

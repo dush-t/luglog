@@ -24,8 +24,8 @@ router.post('/api/payFor/:booking_id', versionCheck, auth, async (req, res) => {
 
     // Creating razorpay order
     const options = {
-        amount: Math.round(booking.netStorageCost * 100),
-        currency: "INR",
+        amount: Math.round(booking.netStorageCost) * 100,
+        currency: "USD",
         receipt: receiptId,
         payment_capture: 0
     }
@@ -69,18 +69,34 @@ router.post('/api/payFor/:booking_id', versionCheck, auth, async (req, res) => {
 });
 
 
-router.post('/api/confirmAppPayment', versionCheck, auth, async (req, res) => {
+router.post('/api/confirmAppPayment', auth, async (req, res) => {
+    console.log('Inside transaction confirmation function');
     const transaction = await Transaction.findById(req.body.transaction_id).populate('user');
+    console.log(transaction)
     const booking = await Booking.findOne({ transaction: transaction._id }).populate('storageSpace');
-    const customer = await Customer.findOne({ user: user._id });
+    console.log(booking)
+    const customer = await Customer.findOne({ user: req.user._id });
+    console.log('customer:', customer._id);
+
+    console.log('request body:', req.body)
 
     // Only allow customer to pay for recently made bookings.
-    if (!booking._id.equals(customer.lastBooking)) {
+    if (!booking._id.equals(customer.latestBooking)) {
         // VERY SUSPICIOUS ACTIVITY
-        return res.status(403).send();
+        console.log('latestBooking check failed')
+        return res.status(403).send({
+            message: {
+                status: 'ERROR',
+                level: 'CRITICAL',
+                displayType: 'ALERT',
+                title: 'Error',
+                description: 'Something wrong happened at our end. Please contact support'
+            }
+        });
     }
 
     if (!transaction) {
+        console.log('transaction not found')
         return res.status(404).send();
     }
 
@@ -97,6 +113,7 @@ router.post('/api/confirmAppPayment', versionCheck, auth, async (req, res) => {
         
         // Handle the referral through which booking was made
         if (booking.couponUsed) {
+            console.log('inside couponUsedBlock')
             const coupon = await Coupon.findById(booking.couponUsed).populate('relatedReferral');
             if (coupon.relatedReferral) {
                 const referral = coupon.relatedReferral;
@@ -105,8 +122,8 @@ router.post('/api/confirmAppPayment', versionCheck, auth, async (req, res) => {
         }
 
         // Send booking emails
-        sendBookingEmailToSpace(booking.storageSpace.email, {storageSpace: booking.storageSpace, booking: booking, user: transaction.user});
-        sendBookingEmailToUser(transaction.user.email, {storageSpace: booking.storageSpace, booking: booking, user: transaction.user});
+        // sendBookingEmailToSpace(booking.storageSpace.email, {storageSpace: booking.storageSpace, booking: booking, user: transaction.user});
+        // sendBookingEmailToUser(transaction.user.email, {storageSpace: booking.storageSpace, booking: booking, user: transaction.user});
 
     }
 
