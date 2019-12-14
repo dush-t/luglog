@@ -34,7 +34,7 @@ const referralSchema = new mongoose.Schema({
     }
 })
 
-referralSchema.index({ code: 1 });
+referralSchema.index({ code: 1, user: 1 });
 
 
 

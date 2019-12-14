@@ -43,7 +43,7 @@ router.post('/users', async (req, res) => {
                 couponsUsed: []
             })
             
-            if (req.body.referralCode) {
+            if (req.body.referralCode !== "" && req.body.referralCode !== null) {
                 const referral = await Referral.findOne({ code: req.body.referralCode })
                 const coupon = await referral.generateCoupon();
                 console.log(coupon)
@@ -78,9 +78,10 @@ router.post('/users', async (req, res) => {
 router.post('/users/login', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.phone_number, req.body.password);
-        console.log('user', user)
+        const referral = await Referral.findOne({ user: user._id });
+
         const token = await user.generateAuthToken();
-        const response = { user: user, token: token }
+        const response = { user: user, token: token, referralCode: referral.code }
         if (user.type === userTypes.CUSTOMER) {
             const customer = await Customer.findOne({ user: user._id });
             response.customer = customer
