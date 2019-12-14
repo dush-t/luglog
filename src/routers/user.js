@@ -78,10 +78,13 @@ router.post('/users', async (req, res) => {
 router.post('/users/login', async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.phone_number, req.body.password);
-        const referral = await Referral.findOne({ user: user._id });
-
         const token = await user.generateAuthToken();
-        const response = { user: user, token: token, referralCode: referral.code }
+        let response = { user: user, token: token }
+
+        const referral = await Referral.findOne({ user: user._id });
+        if (referral) {
+            response.referralCode = referral.code
+        }
         if (user.type === userTypes.CUSTOMER) {
             const customer = await Customer.findOne({ user: user._id });
             response.customer = customer
