@@ -25,7 +25,7 @@ router.post('/api/payFor/:booking_id', versionCheck, auth, async (req, res) => {
     // Creating razorpay order
     const options = {
         amount: Math.round(booking.netStorageCost) * 100,
-        currency: "USD",
+        currency: "INR",
         receipt: receiptId,
         payment_capture: 0
     }
