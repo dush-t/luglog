@@ -37,23 +37,3 @@ module.exports = {
     sendBookingEmailToSpace,
     sendBookingEmailToUser
 }
-
-// sendBookingEmailToUser("dushyant9309@gmail.com", {
-//     storageSpace: {
-//         name: 'TestSpace',
-//         longAddress: 'LongAddress',
-//         location: 'location'
-//     },
-//     user: {
-//         name: 'Dushyant Yadav'
-//     },
-//     booking: {
-//         bookingId: 'GS27SF',
-//         userGovtId: '2018A7PS0179P',
-//         numberOfDays: 2,
-//         numberOfBags: 2,
-//         netStorageCost: 320,
-//         checkInTime: '4 pm',
-//         checkOutTime: '10 pm'
-//     }
-// })

@@ -11,6 +11,7 @@ const Transaction = require('../models/transaction');
 const { generateBookingId } = require('../utils/randomString');
 const { getDays } = require('../utils/dateTime');
 const { sendNewBookingNotification } = require('../utils/slack');
+const validateBookingData = require('../utils/validation/bookingValidation');
 
 const auth = require('../middleware/auth');
 const versionCheck = require('../middleware/versionCheck');
@@ -34,6 +35,14 @@ router.post('/api/bookings/:space_id/book', versionCheck, auth, async (req, res)
 			model: 'Transaction'
 		}
 	});
+
+	// Check booking form validity.
+	const checkValidity = validateBookingData(req.body);
+	console.log(checkValidity)
+	if (!checkValidity.valid) {
+		return res.status(400).send(checkValidity.message);
+	}
+
 	let booking = new Booking();
 	
 	booking.storageSpace = storageSpace._id;
@@ -50,8 +59,7 @@ router.post('/api/bookings/:space_id/book', versionCheck, auth, async (req, res)
 	booking.numberOfDays = getDays(req.body.checkInTime.toString(), req.body.checkOutTime.toString()); 
 
 	// Calculating the booking price.
-	// Doing this here because this is temporary and I don't have a lot of time.
-	const netStorageCost = booking.numberOfDays * 24 * booking.costPerHour * booking.numberOfBags;
+	const netStorageCost = booking.numberOfDays * Math.round(24 * booking.costPerHour) * booking.numberOfBags;
 	booking.netStorageCost = netStorageCost;
 	
 	let coupon = null;
@@ -89,12 +97,6 @@ router.post('/api/bookings/:space_id/book', versionCheck, auth, async (req, res)
 
 	await booking.save();
 
-	// Ugly, but necessary for the moment
-	// if (req.body.couponId && coupon.relatedReferral) {
-	//     const referral = coupon.relatedReferral;
-	//     await referral.handle(booking);
-	// }
-
 	// Adding the booking to the user.
 	customer.isLuggageStored = true;
 	customer.bookings = customer.bookings.concat(booking._id);
@@ -102,7 +104,7 @@ router.post('/api/bookings/:space_id/book', versionCheck, auth, async (req, res)
 	await customer.save();
 
 	res.status(201).send({...booking._doc, storageSpace: storageSpace, checkInTime: booking.checkInTime.getTime(), checkOutTime: booking.checkOutTime.getTime()});
-	// sendNewBookingNotification(booking, storageSpace, req.user);
+	sendNewBookingNotification(booking, storageSpace, req.user);
 })
 
 

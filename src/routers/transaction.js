@@ -121,88 +121,13 @@ router.post('/api/confirmAppPayment', auth, async (req, res) => {
             }
         }
 
-        // Send booking emails
-        // sendBookingEmailToSpace(booking.storageSpace.email, {storageSpace: booking.storageSpace, booking: booking, user: transaction.user});
-        // sendBookingEmailToUser(transaction.user.email, {storageSpace: booking.storageSpace, booking: booking, user: transaction.user});
+        //Send booking emails
+        sendBookingEmailToSpace(booking.storageSpace.email, {storageSpace: booking.storageSpace, booking: booking, user: transaction.user});
+        sendBookingEmailToUser(transaction.user.email, {storageSpace: booking.storageSpace, booking: booking, user: transaction.user});
 
     }
 
     return res.status(200).send(transaction);
-})
-
-
-// Paytm will send info to this endpoint on transaction completion
-router.post('/api/confirmPayment/:transaction_id', async (req, res) => {
-    
-    const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
-    console.log(req.body)
-    console.log(razorpay_payment_id, razorpay_payment_id, razorpay_signature)
-    
-    const transaction = await Transaction.findOne({ razorpayOrderId: req.body.razorpay_order_id}).populate({
-        path: 'user',
-        model: 'User'
-    }).populate({
-        path: 'booking',
-        model: 'Booking',
-        populate: {
-            path: 'storageSpace',
-            model: 'StorageSpace'
-        }
-    });
-    
-    if (Transaction.hasValidSignature(razorpay_order_id, razorpay_payment_id, razorpay_signature)) {
-        transaction.status = 'COMPLETE';
-        await transaction.save();
-        console.log(transaction.booking[0]);
-
-        // const userBody = `Booking confirmed! Your booking for cloakroom facility at ${transaction.booking[0].storageSpace.name} has been confirmed.`
-        // sendSMS(transaction.user.mobile_number, userBody)
-        const booking  = transaction.booking[0]
-
-
-        const vendorBody = `
-New Booking received, GoLuggageFree!
-
-Booking ID: ${booking.bookingId}
-Govt. ID Proof: ${booking.userGovtId}
-Name: ${transaction.user.name}
-
-Number of bags: ${transaction.numberOfBags}
-Check-in time: ${transaction.checkInTime}
-Check-out time: ${transaction.checkOutTime}
-
-Total booking amount: ${booking.netStorageCost}
-(Paid online)
-`
-
-        sendSMS(transaction.booking[0].storageSpace.number, vendorBody)
-
-        res.render('paymentSuccessful', {title: 'SUCCESS'});
-        
-        // email not so important, so will send it after the payment is complete.
-        sendBookingEmailToSpace(transaction.booking[0].storageSpace.email, {storageSpace: booking.storageSpace, booking: booking, user: transaction.user});
-        sendBookingEmailToUser(transaction.user.email, {storageSpace: booking.storageSpace, booking: booking, user: transaction.user});
-
-        throw new Error(`Booking recieved! ${transaction.user.name}, ${transaction.user.mobile_number}, ${booking.storageSpace.name}, ${booking._id.toString()}`);
-
-    } else {
-        // return res.status(400).send();
-        res.render('paymentSuccessful', {title: 'FAILURE'});
-    }
-})
-
-router.get('/initiatePayment/:transaction_id', async (req, res) => {
-    const transaction = await Transaction.findById(req.params.transaction_id).populate({
-        'path': 'user',
-        'models': 'User'
-    })
-    res.render('payView', {
-        'key_id': process.env.RAZORPAY_ID,
-        'order_id': transaction.razorpayOrderId,
-        'user_name': transaction.user.name,
-        'user_number': transaction.user.mobile_number,
-        'user_email': transaction.user.email
-    });
 })
 
 module.exports = router;

@@ -7,7 +7,7 @@ const sendNewUserNotification = (user) => {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "A new user has registered!"
+                    "text": "A new user has registered on the new app!"
                 }
             },
             {
@@ -36,7 +36,7 @@ const sendNewBookingNotification = (booking, storageSpace, user) => {
                 "type": "section",
                 "text": {
                     "type": "mrkdwn",
-                    "text": "A new booking was made!"
+                    "text": "A new booking was made through the new app!"
                 }
             },
             {
