@@ -12,6 +12,7 @@ const { generateBookingId } = require('../utils/randomString');
 const { getDays } = require('../utils/dateTime');
 const { sendNewBookingNotification } = require('../utils/slack');
 const validateBookingData = require('../utils/validation/bookingValidation');
+const { alertMessage } = require('../utils/appMessage');
 
 const auth = require('../middleware/auth');
 const versionCheck = require('../middleware/versionCheck');
@@ -83,15 +84,7 @@ router.post('/api/bookings/:space_id/book', versionCheck, auth, async (req, res)
 		if (applicableCheck.passed) {
 			await booking.applyCoupon(coupon, context);
 		} else {
-			return res.status(400).send({
-				message: {
-					status: "ERROR",
-					level: "INFO",
-					displayType: "ALERT",
-					title: "Invalid Coupon",
-					description: "This coupon is not applicable to this booking"
-				}
-			})
+			return res.status(400).send(alertMessage('Invalid Coupon', 'This coupon is not applicable to this booking.'))
 		}
 	}
 

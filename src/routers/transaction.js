@@ -6,9 +6,10 @@ const Transaction = require('../models/transaction');
 const Customer = require('../models/customer');
 const Coupon = require('../models/coupon');
 
-const { sendSMS } = require('../utils/sms');
 const { sendBookingEmailToSpace, sendBookingEmailToUser } = require('../utils/email');
 const { generateRazorpayRecieptId } = require('../utils/randomString');
+const { alertMessage } = require('../utils/appMessage');
+const { tellOurselvesWeFuckedUp } = require('../utils/slack');
 
 const auth = require('../middleware/auth');
 const versionCheck = require('../middleware/versionCheck');
@@ -70,34 +71,22 @@ router.post('/api/payFor/:booking_id', versionCheck, auth, async (req, res) => {
 
 
 router.post('/api/confirmAppPayment', auth, async (req, res) => {
-    console.log('Inside transaction confirmation function');
     const transaction = await Transaction.findById(req.body.transaction_id).populate('user');
-    console.log(transaction)
     const booking = await Booking.findOne({ transaction: transaction._id }).populate('storageSpace');
-    console.log(booking)
     const customer = await Customer.findOne({ user: req.user._id });
-    console.log('customer:', customer._id);
-
-    console.log('request body:', req.body)
 
     // Only allow customer to pay for recently made bookings.
     if (!booking._id.equals(customer.latestBooking)) {
         // VERY SUSPICIOUS ACTIVITY
         console.log('latestBooking check failed')
-        return res.status(403).send({
-            message: {
-                status: 'ERROR',
-                level: 'CRITICAL',
-                displayType: 'ALERT',
-                title: 'Error',
-                description: 'Something wrong happened at our end. Please contact support'
-            }
-        });
+        tellOurselvesWeFuckedUp('latestBooking check failed', `The check failed for the user ${req.user.name} (${req.user.mobile_number}).`)
+        return res.status(403).send(alertMessage('ERROR', 'Something wrong happened at our end. Please contact support immediately.'));
     }
 
     if (!transaction) {
         console.log('transaction not found')
-        return res.status(404).send();
+        tellOurselvesWeFuckedUp('404 on Transaction', `Transaction was not found for ${req.user.name} (${req.user.mobile_number})'s booking. TxnId: ${req.body.transaction_id}`)
+        return res.status(404).send(alertMessage('ERROR', 'A transaction could not be generated for your booking. Please contact support immediately.'));
     }
 
     const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
@@ -105,7 +94,6 @@ router.post('/api/confirmAppPayment', auth, async (req, res) => {
 
 
     if (transaction.hasValidSignature(razorpay_order_id, razorpay_payment_id, razorpay_signature)) {
-        console.log('Inside transaction-update block');
         transaction.razorpayOrderId = razorpay_order_id;
         transaction.razorpayPaymentId = razorpay_payment_id;
         transaction.status = 'COMPLETE';
