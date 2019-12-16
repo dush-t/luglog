@@ -13,8 +13,14 @@ const resolver = {
             };
         },
         async bookings(parent, args, context) {
-            const bookings = await Booking.find(args);
-            return bookings;
+            const bookings = await Booking.find({...args}).populate('transaction');
+            const validBookings = bookings.filter((booking) => {
+                if (!booking.transaction || booking.transaction.status !== 'COMPLETE') {
+                    return false;
+                }
+                return true;
+            })            
+            return validBookings;
         }
     },
 
