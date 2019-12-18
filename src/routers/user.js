@@ -22,6 +22,10 @@ const router = new express.Router();
 
 
 router.post('/users', async (req, res) => {
+
+    console.log('Someone tried to sign in. Request body - ')
+    console.log(req.body)
+
     try {
         const user = new User({
             name: req.body.name,
