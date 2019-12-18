@@ -1,8 +1,6 @@
 const versionCheck = async (req, res, next) => {
     const appVersion = parseFloat(req.header('X-Version'))
-    console.log(appVersion);
     if (parseFloat(appVersion) < parseFloat(process.env.MIN_ALLOWED_VERSION)) {
-        console.log('Version check faced');
         return res.status(403).send({
             message: {
                 status: 'ERROR',
@@ -13,7 +11,6 @@ const versionCheck = async (req, res, next) => {
             }
         })
     }
-    console.log('Middleware passed');
     next();
 }
 

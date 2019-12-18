@@ -16,7 +16,6 @@ const router = new express.Router();
 
 // SEND LIST OF COUPONS THAT ARE APPLICABLE FOR GIVEN BOOKING
 router.post('/api/getApplicableCoupons', versionCheck, auth, async (req, res) => {
-    console.log(req.body);
     const user = req.user;
     let customer = await Customer.findOne({ user: user._id}).populate('coupons').populate({
         path: 'bookings',
@@ -36,7 +35,6 @@ router.post('/api/getApplicableCoupons', versionCheck, auth, async (req, res) =>
         booking,
         customer
     }
-    // console.log(context);
 
     let coupons = await Coupon.find({ isGlobal: true, visibleGlobal: true })
     coupons = coupons.concat(customer.coupons);
@@ -50,9 +48,7 @@ router.post('/api/getApplicableCoupons', versionCheck, auth, async (req, res) =>
             return;     // No point sending coupons that can NEVER Be used.
             // await coupon.delete()?
         }
-        console.log(coupon.checkApplicability(context));
         if ((coupon.checkApplicability(context)).passed) {
-            console.log('check passed for coupon of code', coupon.code)
             usableCoupons.push(couponObj)
         } else {
             unusableCoupons.push(couponObj)
@@ -66,12 +62,9 @@ router.post('/api/getApplicableCoupons', versionCheck, auth, async (req, res) =>
 
 // SEND LIST OF UN-EXPIRED, UNUSED COUPONS OWNED BY USER
 router.get('/api/getOwnedCoupons', auth, async (req, res) => {
-    console.log('function called')
     const user = req.user;
     const customer = await Customer.findOne({ user: user._id }).populate('coupons');
-    console.log('customer found', customer)
     let coupons = customer.coupons.filter((coupon) => {
-        console.log(coupon.expired(), coupon);
         return (!coupon.expired() && !coupon.used)
     })
     
@@ -83,16 +76,12 @@ router.get('/api/getOwnedCoupons', auth, async (req, res) => {
 
 
 router.post('/api/addCouponToUser', auth, adminAccess, async (req, res) => {
-    console.log('function called');
     const customer = await Customer.findById(req.body.customerId);
-    console.log('customer found', customer)
 
     const coupon = await Coupon.findById(req.body.couponId);
-    console.log('coupon found', coupon)
     
     customer.coupons = customer.coupons.concat(coupon._id);
     await customer.save();
-    console.log('customer saved');
     return res.send(coupon);
 })
 

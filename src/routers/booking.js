@@ -27,6 +27,10 @@ const router = new express.Router();
 // CREATE A BOOKING
 router.post('/api/bookings/:space_id/book', versionCheck, auth, async (req, res) => {
 
+	console.log(`${req.user.name} (${req.user.mobile_number}) tried to make a booking. Here is his formData - `)
+	console.log(`StorageSpace id: ${req.params.space_id}`)
+	console.log(req.body)
+
 	const storageSpace = await StorageSpace.findById(req.params.space_id).populate('area');
 	const customer = await Customer.findOne({ user: req.user._id }).populate({
 		path: 'bookings',
@@ -39,7 +43,6 @@ router.post('/api/bookings/:space_id/book', versionCheck, auth, async (req, res)
 
 	// Check booking form validity.
 	const checkValidity = validateBookingData(req.body);
-	console.log(checkValidity)
 	if (!checkValidity.valid) {
 		return res.status(400).send(checkValidity.message);
 	}
@@ -80,7 +83,6 @@ router.post('/api/bookings/:space_id/book', versionCheck, auth, async (req, res)
 		}
 
 		const applicableCheck = coupon.checkApplicability(context);
-		console.log(applicableCheck);
 		if (applicableCheck.passed) {
 			await booking.applyCoupon(coupon, context);
 		} else {

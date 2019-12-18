@@ -12,9 +12,6 @@ const getDays = (checkInTime,checkOutTime) => {
         return NaN;
     }
     else{
-        console.log(checkOutTime);
-        console.log(checkInTime);
-        console.log(diff);
         var days = (Math.ceil((checkOutDate-checkInDate)/(1000*60*60*24)));
         //console.log(days);
         return days;

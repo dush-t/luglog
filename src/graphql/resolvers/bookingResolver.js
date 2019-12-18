@@ -26,7 +26,6 @@ const resolver = {
 
     Booking: {
         async storageSpace(parent) {
-            console.log(parent.storageSpace);
             const storageSpace = await StorageSpace.findById(parent.storageSpace);
             return storageSpace;
         },

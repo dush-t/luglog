@@ -39,7 +39,6 @@ referralSchema.index({ code: 1, user: 1 });
 
 
 const handleRefPartnerReferral = async (referral, user, booking) => {
-    console.log('refpartner function called')
     if (referral.type !== referralTypes.REF_PARTNER_TO_CUSTOMER) {
         throw new Error(`Invalid referral type ${referral.type} for parent user type ${user.type}`);
     }
@@ -51,7 +50,6 @@ const handleRefPartnerReferral = async (referral, user, booking) => {
         transferId: generateCashfreeTransferId(),
         transferMode: referralPartner.cashfreeData.transferMode || cashfreeModeTypes.PAYTM // for now.
     }
-    console.log(cashfreeData);
     renewToken() // renew cashfree token because their workflow is shit.
     const response = await axios.post(`${process.env.CASHFREE_BASE_URL}/payout/v1/requestTransfer`, cashfreeData, {
         headers: {
@@ -69,7 +67,6 @@ const handleRefPartnerReferral = async (referral, user, booking) => {
         });
         await referralUse.save();
     }
-    console.log('payout request response', response.data)
     // pay the guy
 }
 

@@ -1,7 +1,6 @@
 const axios = require('axios');
 
 const getToken = () => {
-    console.log('called')
     axios.post(`${process.env.CASHFREE_BASE_URL}/payout/v1/authorize`, {}, {
         headers: {
             'X-Client-Id': process.env.CASHFREE_CLIENT_ID,

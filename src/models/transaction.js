@@ -49,7 +49,6 @@ transactionSchema.methods.hasValidSignature = function (rpayOrderId, rpayPayment
     let generatedSignature = hmac.digest('hex');
 
     if (generatedSignature === rpay_signature) {
-        console.log('Signature is valid')
         return true;
     } else {
         return false;

@@ -85,8 +85,6 @@ const compareType = (type, value, valueToCompare) => {
             if (value instanceof Object) {  // if an object is to be compared, compared it's _id instead.
                 return valueToCompare.some(v => value._id.equals(v.toString()));
             } else {
-                console.log(value.toString());
-                console.log(valueToCompare.toString());
                 return valueToCompare.toString() === value.toString();
             }
     }
@@ -157,7 +155,6 @@ couponSchema.methods.numberOfUsesBy = function (customer) {
             }
         }
     });
-    console.log("Number of coupon uses:", numberOfUses);
     return numberOfUses;
 }
 
@@ -176,11 +173,9 @@ couponSchema.methods.expired = function () {
 couponSchema.methods.checkApplicability = function (context) {
     const coupon = this;
     const constraints = JSON.parse(coupon.constraints);
-    // console.log(constraints);
 
     // Check if constraints are satisfied
     const constraintsCheck = checkConstraints(context, constraints);
-    // console.log(constraintsCheck);
     if (!constraintsCheck.passed) {
         return {
             ...constraintsCheck,

@@ -71,14 +71,10 @@ router.post('/api/addReferralPartner', auth, adminAccess, async (req, res) => {
     })
         .then(async (response) => {
             const data = response.data;
-            console.log(data)
             if (data.status === 'SUCCESS') {
                 await user.save();
-                console.log('User saved')
                 await referralPartner.save();
-                console.log('referralPartner saved')
                 await referral.save();
-                console.log('referral saved');
             }
         })
         // .catch((response) => {

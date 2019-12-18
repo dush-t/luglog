@@ -44,14 +44,12 @@ router.post('/users', async (req, res) => {
             })
             
             if ((req.body.referralCode) !== "" && (req.body.referralCode !== null)) {
-                console.log(req.body)
                 const referral = await Referral.findOne({ code: req.body.referralCode })
                 const coupon = await referral.generateCoupon();
                 customer.coupons = customer.coupons.concat(coupon._id);
             }
             await customer.save();
             response.customer = customer;
-            console.log('customer saved')
         }
 
         const referral = new Referral({
@@ -89,7 +87,6 @@ router.post('/users/login', async (req, res) => {
             const customer = await Customer.findOne({ user: user._id });
             response.customer = customer
         }
-        console.log('type', user.type)
         res.send(response);
     } catch (e) {
         console.log(e);
@@ -120,7 +117,6 @@ router.post('/users/forgotPasswordOTP', async (req, res) => {
     await user.save();
     const sendOTP = new sendotp(process.env.SMS_AUTHKEY);
     sendOTP.send(number.toString(), 'GLGFre', OTP, (error, data) => {
-        console.log(error);
         console.log(data);
     })
     // sendSMS(number.toString(), `OTP to reset password: ${OTP}`);
@@ -276,15 +272,12 @@ router.get('/users/migrate', auth, adminAccess, async (req, res) => {
         await customer.save();
         user.type = 'CUSTOMER';
         await user.save();
-        console.log(user._id, user.name, user.mobile_number);
     }
     res.send(users);
 })
 
 router.get('/users/migrateUser/:_id', auth, adminAccess, async (req, res) => {
-    console.log('function called')
     const user = await User.findOne({ _id: req.params._id });
-    console.log('user found')
     const customer = new Customer({
         user: user._id,
         bookings: user.bookings.slice(),
@@ -293,8 +286,6 @@ router.get('/users/migrateUser/:_id', auth, adminAccess, async (req, res) => {
         coupons: []
     });
     await customer.save();
-    console.log('customer saved')
-    console.log(customer._id);
     res.send(customer)
 })
 

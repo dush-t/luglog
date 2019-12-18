@@ -31,16 +31,12 @@ router.post('/api/payFor/:booking_id', versionCheck, auth, async (req, res) => {
         payment_capture: 0
     }
 
-    console.log(booking);
-    console.log(options)
 
     var instance = new Razorpay({
         key_id: process.env.RAZORPAY_ID,
         key_secret: process.env.RAZORPAY_SECRET
     })
     instance.orders.create(options, async function (err, order) {
-        console.log(order);
-        console.log(err);        
         const transaction = new Transaction({
             amount: Math.round(booking.netStorageCost),
             user: req.user._id,
@@ -78,19 +74,16 @@ router.post('/api/confirmAppPayment', auth, async (req, res) => {
     // Only allow customer to pay for recently made bookings.
     if (!booking._id.equals(customer.latestBooking)) {
         // VERY SUSPICIOUS ACTIVITY
-        console.log('latestBooking check failed')
         tellOurselvesWeFuckedUp('latestBooking check failed', `The check failed for the user ${req.user.name} (${req.user.mobile_number}).`)
         return res.status(403).send(alertMessage('ERROR', 'Something wrong happened at our end. Please contact support immediately.'));
     }
 
     if (!transaction) {
-        console.log('transaction not found')
         tellOurselvesWeFuckedUp('404 on Transaction', `Transaction was not found for ${req.user.name} (${req.user.mobile_number})'s booking. TxnId: ${req.body.transaction_id}`)
         return res.status(404).send(alertMessage('ERROR', 'A transaction could not be generated for your booking. Please contact support immediately.'));
     }
 
     const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
-    console.log(razorpay_payment_id, razorpay_order_id, razorpay_signature);
 
 
     if (transaction.hasValidSignature(razorpay_order_id, razorpay_payment_id, razorpay_signature)) {
@@ -101,7 +94,6 @@ router.post('/api/confirmAppPayment', auth, async (req, res) => {
         
         // Handle the referral through which booking was made
         if (booking.couponUsed) {
-            console.log('inside couponUsedBlock')
             const coupon = await Coupon.findById(booking.couponUsed).populate('relatedReferral');
             if (coupon.relatedReferral) {
                 const referral = coupon.relatedReferral;
