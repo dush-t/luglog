@@ -23,7 +23,7 @@ const graphqlServer = new ApolloServer({
     typeDefs, 
     resolvers, 
     introspection: true, 
-    playground: true,
+    playground: false,
     context: async ({ req }) => {
         let authToken = null;
         let currentUser = null;
