@@ -79,7 +79,7 @@ const bookingConfirmationEmailUser = (storageSpace, booking, user) => {
                                                     <tr>
                                                         <td style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 64px;" width="64">
 
-                                                            <img height="auto" src="https://goluggagefree.com/image/hero-img-blue.png" style="height: 80px; line-height: 100%; -ms-interpolation-mode: bicubic; border: 0; display: block; outline: none; text-decoration: none; width=auto;" >
+                                                            <img height="auto" src="https://goluggagefree.com/static/media/hero-img-blue.d5bcd689.png" style="height: 80px; line-height: 100%; -ms-interpolation-mode: bicubic; border: 0; display: block; outline: none; text-decoration: none; width=auto;" >
 
                                                         </td>
                                                     </tr>
@@ -358,7 +358,7 @@ const bookingConfirmationEmailStore = (storageSpace, booking, user) => {
                                                     <tr>
                                                         <td style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 64px;" width="64">
 
-                                                            <img height="auto" src="https://goluggagefree.com/image/hero-img-blue.png" style="height: 80px; line-height: 100%; -ms-interpolation-mode: bicubic; border: 0; display: block; outline: none; text-decoration: none; width=auto;" >
+                                                            <img height="auto" src="https://goluggagefree.com/static/media/hero-img-blue.d5bcd689.png" style="height: 80px; line-height: 100%; -ms-interpolation-mode: bicubic; border: 0; display: block; outline: none; text-decoration: none; width=auto;" >
 
                                                         </td>
                                                     </tr>
@@ -532,7 +532,206 @@ const bookingConfirmationEmailStore = (storageSpace, booking, user) => {
     `
 }
 
+
+const welcomeEmailBody = (name) => {
+    return `<!doctype html>
+    <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+    
+    <head>
+        <title>
+    
+        </title>
+      
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+       
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        
+        <style type="text/css">
+    @media only screen and (max-width:480px) {
+      @-ms-viewport {
+        width: 320px;
+      }
+    
+      @viewport {
+        width: 320px;
+      }
+    }
+    </style>
+      
+    
+        <style type="text/css">
+    @media only screen and (min-width:480px) {
+      .mj-column-per-100 {
+        width: 100% !important;
+      }
+    }
+    </style>
+    
+    
+        
+    
+    </head>
+    
+    <body style="margin: 0; padding: 0; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; background-color: #f9f9f9;">
+    
+    
+        <div style="background-color:#f9f9f9;">
+    
+    
+    
+            <div style="background:#f9f9f9;background-color:#f9f9f9;Margin:0px auto;max-width:600px;">
+    
+                <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; background: #f9f9f9; background-color: #f9f9f9; width: 100%;" width="100%" bgcolor="#f9f9f9">
+                    <tbody>
+                        <tr>
+                            <td style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-bottom: #07132B solid 5px; direction: ltr; font-size: 0px; padding: 20px 0; text-align: center; vertical-align: top;" align="center" valign="top">
+                               
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+    
+            </div>
+    
+    
+    
+            <div style="background:#fff;background-color:#fff;Margin:0px auto;max-width:600px;">
+    
+                <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; background: #fff; background-color: #fff; width: 100%;" width="100%" bgcolor="#fff">
+                    <tbody>
+                        <tr>
+                            <td style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border: #dddddd solid 1px; border-top: 0px; direction: ltr; font-size: 0px; padding: 20px 0; text-align: center; vertical-align: top;" align="center" valign="top">
+                                
+    
+                                <div class="mj-column-per-100 outlook-group-fix" style="font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;">
+    
+                                    <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; vertical-align: bottom;" width="100%" valign="bottom">
+    
+                                        <tr>
+                                            <td align="center" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-size: 0px; padding: 10px 25px; word-break: break-word;">
+    
+                                                <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-collapse: collapse; border-spacing: 0px;">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 64px;" width="64">
+    
+                                                                <img height="auto" src="https://goluggagefree.com/static/media/hero-img-blue.d5bcd689.png" style="height: 80px; line-height: 100%; -ms-interpolation-mode: bicubic; border: 0; display: block; outline: none; text-decoration: none; width=auto;" >
+    
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+    
+                                            </td>
+                                        </tr>
+    
+                                        <tr>
+                                            <td align="center" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-size: 0px; padding: 10px 25px; padding-bottom: 40px; word-break: break-word;">
+    
+                                                <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:28px;font-weight:bold;line-height:1;text-align:center;color:#555;">
+                                                    Welcome to GoLuggageFree
+                                                </div>
+    
+                                            </td>
+                                        </tr>
+    
+                                        <tr>
+                                            <td align="left" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-size: 0px; padding: 10px 25px; word-break: break-word;">
+    
+                                                <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:16px;line-height:22px;text-align:left;color:#555;">
+                                                    Hello ${name}!<br><br>
+                                                    Thank you for signing up for GoLuggageFree. We're really happy to have you! Now you can book a cloak room near you and travel the city luggage free!<br><br>
+                                                </div>
+    
+                                            </td>
+                                        </tr>
+    
+                                        
+    
+                                        <tr>
+                                            <td align="left" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-size: 0px; padding: 10px 25px; word-break: break-word;">
+    
+                                                <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:14px;line-height:20px;text-align:left;color:#525252;">
+                                                    Best regards,<br><br> Team GoLuggageFree<br>
+                                                    <a href="https://www.goluggagefree.com" style="color:#2F67F6">www.goluggagefree.com</a>
+                                                </div>
+    
+                                            </td>
+                                        </tr>
+    
+                                    </table>
+    
+                                </div>
+    
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+    
+            </div>
+    
+    
+            <div style="Margin:0px auto;max-width:600px;">
+    
+                <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%;" width="100%">
+                    <tbody>
+                        <tr>
+                            <td style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; direction: ltr; font-size: 0px; padding: 20px 0; text-align: center; vertical-align: top;" align="center" valign="top">
+                                
+    
+                                <div class="mj-column-per-100 outlook-group-fix" style="font-size:13px;text-align:left;direction:ltr;display:inline-block;vertical-align:bottom;width:100%;">
+    
+                                    <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+                                        <tbody>
+                                            <tr>
+                                                <td style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; vertical-align: bottom; padding: 0;" valign="bottom">
+    
+                                                    <table border="0" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+    
+                                                        <tr>
+                                                            <td align="center" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-size: 0px; padding: 0; word-break: break-word;">
+    
+                                                                <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;font-weight:300;line-height:1;text-align:center;color:#575757;">
+                                                                    Atlas Food Products Pvt. Ltd. 25 New Industial Estate, Jagatpur, Cuttack-754021
+                                                                </div>
+    
+                                                            </td>
+                                                        </tr>
+    
+                                                        <tr>
+                                                            <td align="center" style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; font-size: 0px; padding: 10px; word-break: break-word;">
+    
+                                                                <div style="font-family:'Helvetica Neue',Arial,sans-serif;font-size:12px;font-weight:300;line-height:1;text-align:center;color:#575757;">
+                                                                    <a href="" style="color:#575757">Unsubscribe</a> from our emails
+                                                                </div>
+    
+                                                            </td>
+                                                        </tr>
+    
+                                                    </table>
+    
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+    
+                             
+                            </div></td>
+                        </tr>
+                    </tbody>
+                </table>
+    
+            </div>
+        </div>
+    
+    </body>
+    
+    </html>`
+}
+
 module.exports = {
     bookingConfirmationEmailUser,
-    bookingConfirmationEmailStore
+    bookingConfirmationEmailStore,
+    welcomeEmailBody
 }
