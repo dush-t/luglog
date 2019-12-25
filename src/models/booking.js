@@ -145,7 +145,7 @@ bookingSchema.methods.applyCoupon = async function (coupon, context) {
     if (coupon.type === couponTypes.DISCOUNT || couponTypes.REFERRAL_DICSOUNT) {
         if (coupon.benefitType === couponBenefitTypes.PERCENTAGE) {
             let benefit = this.netStorageCost * (coupon.value/100)
-            if (benefit > coupon.maxBenefitValue) {
+            if ((coupon.maxBenefitValue !== null) && (coupon.maxBenefitValue !== undefined) && (benefit > coupon.maxBenefitValue)) {
                 benefit = coupon.maxBenefitValue 
             }
             this.netStorageCost = this.netStorageCost - benefit
