@@ -5,6 +5,7 @@ const Booking = require('../models/booking');
 const Transaction = require('../models/transaction');
 const Customer = require('../models/customer');
 const Coupon = require('../models/coupon');
+const StorageSpace = require('../models/storageSpace');
 
 const { sendBookingEmailToSpace, sendBookingEmailToUser } = require('../utils/email');
 const { generateRazorpayRecieptId } = require('../utils/randomString');
@@ -104,6 +105,11 @@ router.post('/api/confirmAppPayment', auth, async (req, res) => {
         //Send booking emails
         sendBookingEmailToSpace(booking.storageSpace.email, {storageSpace: booking.storageSpace, booking: booking, user: transaction.user});
         sendBookingEmailToUser(transaction.user.email, {storageSpace: booking.storageSpace, booking: booking, user: transaction.user});
+
+        // Increase booking count
+        const s = StorageSpace.findById(booking.storageSpace._id);
+        s.numOfBookings = s.numOfBookings + 1;
+        await s.save();
 
     }
 
