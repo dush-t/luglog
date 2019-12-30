@@ -79,7 +79,7 @@ const bookingConfirmationEmailUser = (storageSpace, booking, user) => {
                                                     <tr>
                                                         <td style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 64px;" width="64">
 
-                                                            <img height="auto" src="https://goluggagefree.com/static/media/hero-img-blue.d5bcd689.png" style="height: 80px; line-height: 100%; -ms-interpolation-mode: bicubic; border: 0; display: block; outline: none; text-decoration: none; width=auto;" >
+                                                            <img src="https://goluggagefree.com/static/media/hero-img-blue.d5bcd689.png" style="height: 80px; line-height: 100%; -ms-interpolation-mode: bicubic; border: 0; display: block; outline: none; text-decoration: none; width=auto;" >
 
                                                         </td>
                                                     </tr>
@@ -358,7 +358,7 @@ const bookingConfirmationEmailStore = (storageSpace, booking, user) => {
                                                     <tr>
                                                         <td style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 64px;" width="64">
 
-                                                            <img height="auto" src="https://goluggagefree.com/static/media/hero-img-blue.d5bcd689.png" style="height: 80px; line-height: 100%; -ms-interpolation-mode: bicubic; border: 0; display: block; outline: none; text-decoration: none; width=auto;" >
+                                                            <img  src="https://goluggagefree.com/static/media/hero-img-blue.d5bcd689.png" style="height: 80px; line-height: 100%; -ms-interpolation-mode: bicubic; border: 0; display: block; outline: none; text-decoration: none; width=auto;" >
 
                                                         </td>
                                                     </tr>
@@ -616,7 +616,7 @@ const welcomeEmailBody = (name) => {
                                                         <tr>
                                                             <td style="border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 64px;" width="64">
     
-                                                                <img height="auto" src="https://goluggagefree.com/static/media/hero-img-blue.d5bcd689.png" style="height: 80px; line-height: 100%; -ms-interpolation-mode: bicubic; border: 0; display: block; outline: none; text-decoration: none; width=auto;" >
+                                                                <img src="https://goluggagefree.com/static/media/hero-img-blue.d5bcd689.png" style="height: 80px; line-height: 100%; -ms-interpolation-mode: bicubic; border: 0; display: block; outline: none; text-decoration: none; width=auto;" >
     
                                                             </td>
                                                         </tr>
