@@ -83,6 +83,9 @@ const storageSpaceSchema = new mongoose.Schema({
     timings: {
         type: String,
         default: '24x7'
+    },
+    numOfBookings: {
+        type: Number
     }
 })
 

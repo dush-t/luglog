@@ -4,6 +4,7 @@ const sharp = require('sharp');
 const Area = require('../models/area');
 const StorageSpace = require('../models/storageSpace');
 const Image = require('../models/image');
+const Booking = require('../models/booking');
 
 const auth = require('../middleware/auth');
 const adminAccess = require('../middleware/adminAccess');
@@ -116,12 +117,21 @@ router.get('/api/storageSpace/:space_id', async (req, res) => {
 })
 
 
-router.get('/migrateStorageSpaces', async (req, res) => {
+router.get('/migrateStorageSpaces', auth, adminAccess, async (req, res) => {
     const storageSpaces = await StorageSpace.find({})
     for (let i = 0; i < storageSpaces.length; i++) {
         const s = storageSpaces[i];
-        s.storeImages = []
-        await s.save()
+        // s.storeImages = []
+        // await s.save()
+        const bookings = await Booking.find({ storageSpace: s._id}).populate('transaction');
+        numCompleteBookings = 0;
+        for (let j = 0; j < bookings.length; j++) {
+            if (bookings[j].transaction && (bookings[j].transaction.status === 'COMPLETE')) {
+                numCompleteBookings++;
+            }
+        }
+        s.numOfBookings = numCompleteBookings + 50 + Math.round(Math.random() * 50);
+        await s.save();
     }
     return res.send(storageSpaces);
 })
