@@ -9,7 +9,7 @@ const hbs = require('hbs');
 const cors = require('cors'); // no harm, for now
 
 const { getToken } = require('./utils/cashfree');
-// getToken();
+getToken();
 
 // For authentication in graphql
 const User = require('./models/user');

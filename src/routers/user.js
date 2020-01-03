@@ -14,7 +14,7 @@ const {sendWelcomeEmail} = require('../utils/email');
 const {sendSMS} = require('../utils/sms');
 const {generateUUID, generateRandomInt, generateReferralCode} = require('../utils/randomString');
 const { sendNewUserNotification, tellOurselvesWeFuckedUp } = require('../utils/slack');
-const { createHubspotContact, createHubspotDeal } = require('../utils/hubspot');
+const { createHubspotContact, updateHubspotContact, createHubspotDeal, updateHubspotDeal } = require('../utils/hubspot');
 
 const { userTypes } = require('../constants/userTypes');
 const { referralTypes } = require('../constants/referralTypes');
@@ -90,7 +90,7 @@ router.post('/users', async (req, res) => {
         res.status(201).send(response)
         
         // Post create jobs must be done after sending the user the response.
-        // sendWelcomeEmail(user.email, user.name);
+        sendWelcomeEmail(user.email, user.name);
         sendNewUserNotification(user, hubspotProfileURL)
 
     } catch (e) {
@@ -313,55 +313,6 @@ router.get('/users/migrate', auth, adminAccess, async (req, res) => {
         customer.
     }
     res.send(users);
-})
-
-router.get('/users/migrateUser/:_id', auth, async (req, res) => {
-    const user = await User.findOne({ _id: req.params._id });
-    const customer = await Customer.findOne({ user: user._id }).populate({
-        path: 'bookings',
-        model: 'Booking',
-        select: 'storageSpace transaction',
-        populate: {
-            path: 'transaction',
-            model: 'Transaction'
-        }
-    })
-    const { contact, deal } = await createHubspotContact(user);
-    user.hubspotVid = contact.vid;
-    customer.currentHubspotDealId = deal.dealId;
-    
-    const validBookings = customer.bookings.filter((booking) => {
-        if (!booking.transaction || booking.transaction.status !== 'COMPLETE') {
-            return false;
-        }
-        return true;
-    })
-
-    for (let j = 0; j < validBookings.length; j++) {
-        booking = validBookings[j];
-        const dealObj = {
-            associations: {
-                associatedVids: [contact.vid]
-            },
-            properties: {
-                amount: booking.netStorageCost,
-                storage_space: booking.storageSpace.toString(),
-                dealstage: stage,
-                bags: parseInt(booking.numberOfBags),
-                days: parseInt(booking.numberOfDays),
-                checkin_time: (new Date(booking.checkInTime)).getTime(),
-                checkout_time: (new Date(booking.checkOutTime)).getTime(),
-                dealname: user.name,
-                dealstage: hubspotDealStages.CLOSED_WON,
-                pipeline: 'default',
-                dealtype: 'cloakroombooking'
-            }
-        create
-    }
-
-    customer.numSuccessfulBookings = validBookings.length;
-    await customer.save();
-    res.send(customer)
 })
 
 
