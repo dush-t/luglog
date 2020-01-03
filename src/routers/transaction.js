@@ -110,9 +110,15 @@ router.post('/api/confirmAppPayment', auth, async (req, res) => {
         sendBookingEmailToUser(transaction.user.email, {storageSpace: booking.storageSpace, booking: booking, user: transaction.user});
 
         // Increase booking count
-        const s = StorageSpace.findById(booking.storageSpace._id);
-        s.numOfBookings = s.numOfBookings + 1;
-        await s.save();
+        try {
+            console.log('booking storagespace id', booking.storageSpace._id)
+            const space = StorageSpace.findById(booking.storageSpace._id)
+            console.log('booking storagespace', space)
+            space.numOfBookings = space.numOfBookings + 1;
+            await space.save();
+        } catch (e) {
+            console.log(e);
+        }
 
         // Move deal forward
         try {
