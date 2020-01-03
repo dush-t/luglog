@@ -90,7 +90,7 @@ router.post('/users', async (req, res) => {
         res.status(201).send(response)
         
         // Post create jobs must be done after sending the user the response.
-        sendWelcomeEmail(user.email, user.name);
+        // sendWelcomeEmail(user.email, user.name);
         sendNewUserNotification(user, hubspotProfileURL)
 
     } catch (e) {
@@ -286,34 +286,7 @@ router.get('/users/:id/avatar', async (req, res) => {
     }
 })
 
-router.get('/users/migrate', auth, adminAccess, async (req, res) => {
-    const users = await User.find({})
-    for (let i = 0; i < users.length; i++) {
-        const user = users[i];
-        const customer = await Customer.findOne({ user: user._id }).populate({
-            path: 'bookings',
-            model: 'Booking',
-            select: 'storageSpace transaction',
-            populate: {
-                path: 'transaction',
-                model: 'Transaction'
-            }
-        })
-        const { contact, deal } = await createHubspotContact(user);
-        user.hubspotVid = contact.vid;
-        customer.currentHubspotDealId = deal.dealId;
-        
-        const validBookings = customer.bookings.filter((booking) => {
-            if (!booking.transaction || booking.transaction.status !== 'COMPLETE') {
-                return false;
-            }
-            return true;
-        })
 
-        customer.
-    }
-    res.send(users);
-})
 
 
 
