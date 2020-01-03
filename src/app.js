@@ -9,7 +9,7 @@ const hbs = require('hbs');
 const cors = require('cors'); // no harm, for now
 
 const { getToken } = require('./utils/cashfree');
-getToken();
+// getToken();
 
 // For authentication in graphql
 const User = require('./models/user');
@@ -23,7 +23,7 @@ const graphqlServer = new ApolloServer({
     typeDefs, 
     resolvers, 
     introspection: true, 
-    playground: false,
+    playground: true,
     context: async ({ req }) => {
         let authToken = null;
         let currentUser = null;

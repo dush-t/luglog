@@ -51,10 +51,6 @@ const userSchema = new mongoose.Schema({
             required: true
         }
     }],
-    // current_city: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'City'
-    // },
     is_luggage_stored: {
         type: Boolean,
         required: true,
@@ -75,6 +71,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
         default: userTypes.CUSTOMER
+    },
+    hubspotVid: {
+        type: Number
     }
 }, {
     timestamps: true

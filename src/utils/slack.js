@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const sendNewUserNotification = (user) => {
+const sendNewUserNotification = (user, hubspotURL) => {
     const messageBody = {
         "blocks": [
             {
@@ -20,6 +20,17 @@ const sendNewUserNotification = (user) => {
                     "type": "mrkdwn",
                     "text": `*${user.name}*\nEmail: ${user.email} \nPhone: ${user.mobile_number} \nMongoID: ${user._id.toString()}`
                 }
+            },
+            {
+                "type": "divider"
+            },
+            {
+                "type": "section",
+                "block_id": "section123",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": `<${hubspotURL}|*Open in Hubspot*>`   
+                }
             }
         ]
     }
@@ -29,7 +40,7 @@ const sendNewUserNotification = (user) => {
         })
 }
 
-const sendNewBookingNotification = (booking, storageSpace, user) => {
+const sendNewBookingNotification = (booking, storageSpace, user, hubspotURL) => {
     const messageBody = {
         "blocks": [
             {
@@ -37,6 +48,14 @@ const sendNewBookingNotification = (booking, storageSpace, user) => {
                 "text": {
                     "type": "mrkdwn",
                     "text": "A new booking was made through the new app!"
+                }
+            },
+            {
+                "type": "section",
+                "block_id": "section123",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": `<${hubspotURL}|*Open in Hubspot*>`   
                 }
             },
             {

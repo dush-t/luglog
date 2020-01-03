@@ -11,9 +11,12 @@ const { sendBookingEmailToSpace, sendBookingEmailToUser } = require('../utils/em
 const { generateRazorpayRecieptId } = require('../utils/randomString');
 const { alertMessage } = require('../utils/appMessage');
 const { tellOurselvesWeFuckedUp } = require('../utils/slack');
+const { updateHubspotDeal, createHubspotDeal, updateHubspotContact } = require('../utils/hubspot');
 
 const auth = require('../middleware/auth');
 const versionCheck = require('../middleware/versionCheck');
+
+const { hubspotDealStages } = require('../constants/hubspotDealStages');
 
 
 
@@ -110,6 +113,34 @@ router.post('/api/confirmAppPayment', auth, async (req, res) => {
         const s = StorageSpace.findById(booking.storageSpace._id);
         s.numOfBookings = s.numOfBookings + 1;
         await s.save();
+
+        // Move deal forward
+        try {
+            updateHubspotDeal(customer.currentHubspotDealId, hubspotDealStages.CLOSED_WON)
+            const newDeal = await createHubspotDeal({
+                associations: {
+                    associatedVids: [req.user.hubspotVid]
+                },
+                properties: {
+                    dealname: req.user.name,
+                    dealstage: hubspotDealStages.RECURRING,
+                    pipeline: 'default',
+                    dealtype: 'cloakroombooking'
+                }
+            })
+            customer.currentHubspotDealId = newDeal.dealId;
+            customer.numSuccessfulBookings = customer.numSuccessfulBookings + 1;
+            await customer.save()
+    
+            updateHubspotContact(req.user.hubspotVid, {
+                properties: {
+                    number_of_successful_bookings: customer.numSuccessfulBookings
+                }
+            })
+        } catch (e) {
+            console.log(e)
+            tellOurselvesWeFuckedUp(`New deal creation after successful booking failed for ${req.user.name} - ${req.user._id}`)
+        }
 
     }
 

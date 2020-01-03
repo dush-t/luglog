@@ -13,6 +13,7 @@ const { getDays } = require('../utils/dateTime');
 const { sendNewBookingNotification } = require('../utils/slack');
 const validateBookingData = require('../utils/validation/bookingValidation');
 const { alertMessage } = require('../utils/appMessage');
+const { updateHubspotDeal } = require('../utils/hubspot');
 
 const auth = require('../middleware/auth');
 const versionCheck = require('../middleware/versionCheck');
@@ -20,6 +21,7 @@ const adminAccess = require('../middleware/adminAccess');
 // const imageUpload = require('../utils/imageUpload');
 
 const { couponContextTypes } = require('../constants/couponContextTypes');
+const { hubspotDealStages } = require('../constants/hubspotDealStages');
 
 const router = new express.Router();
 
@@ -99,7 +101,11 @@ router.post('/api/bookings/:space_id/book', versionCheck, auth, async (req, res)
 	await customer.save();
 
 	res.status(201).send({...booking._doc, storageSpace: storageSpace, checkInTime: booking.checkInTime.getTime(), checkOutTime: booking.checkOutTime.getTime()});
-	sendNewBookingNotification(booking, storageSpace, req.user);
+	
+	updateHubspotDeal(customer.currentHubspotDealId, hubspotDealStages.INTERESTED, {...booking._doc, couponUsed: coupon})
+	
+	dealURL = `https://app.hubspot.com/contacts/6931992/deal/${customer.currentHubspotDealId}`
+	sendNewBookingNotification(booking, storageSpace, req.user, dealURL);
 })
 
 

@@ -38,6 +38,13 @@ const customerSchema = new mongoose.Schema({
     latestBooking: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Booking'
+    },
+    numSuccessfulBookings: {
+        type: Number,
+        deafult: 0
+    },
+    currentHubspotDealId: {
+        type: Number
     }
 })
 
