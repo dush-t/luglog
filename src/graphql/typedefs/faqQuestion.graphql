@@ -1,0 +1,8 @@
+type FaqQuestion {
+    question: String
+    answer: String
+}
+
+type Query {
+    faqQuestions(): [FaqQuestion]
+}
