@@ -1,0 +1,9 @@
+type DetailedTiming {
+    monday: StoreTiming
+    tuesday: StoreTiming
+    wednesday: StoreTiming
+    thursday: StoreTiming
+    friday: StoreTiming
+    saturday: StoreTiming
+    sunday: StoreTiming
+}

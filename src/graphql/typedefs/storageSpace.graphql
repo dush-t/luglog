@@ -18,6 +18,7 @@ type StorageSpace {
     ownerImage: String
     timings: String
     numOfBookings: Int
+    detailedTiming: DetailedTiming
 }
 
 type Query {

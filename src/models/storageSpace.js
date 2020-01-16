@@ -69,13 +69,14 @@ const storageSpaceSchema = new mongoose.Schema({
         type: String,
         default: "Mr_Dush__T was my xbox-live gamertag way back when I was in class 8"
     },
-    openingTime: {
-        type: String,
-        default: "10 AM"
-    },
-    closingTime: {
-        type: String,
-        default: "10 PM"
+    detailedTiming: {
+        monday: { open: {type: Date}, close: {type: Date} },
+        tuesday: { open: {type: Date}, close: {type: Date} },
+        wednesday: { open: {type: Date}, close: {type: Date} },
+        thursday: { open: {type: Date}, close: {type: Date} },
+        friday: { open: {type: Date}, close: {type: Date} },
+        saturday: { open: {type: Date}, close: {type: Date} },
+        sunday: { open: {type: Date}, close: {type: Date} },
     },
     ownerImage: {
         type: String

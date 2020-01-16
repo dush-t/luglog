@@ -1,0 +1,4 @@
+type StoreTiming {
+    open: String
+    close: String
+}
