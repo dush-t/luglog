@@ -23,5 +23,5 @@ type StorageSpace {
 
 type Query {
     storageSpace(_id: String!): StorageSpace
-    storageSpaces(area: String, open: Boolean): [StorageSpace]
+    storageSpaces(area: String, open: Boolean, longitude: String, latitude: String): [StorageSpace]
 }

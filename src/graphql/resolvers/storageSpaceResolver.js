@@ -15,7 +15,23 @@ const resolver = {
         },
 
         async storageSpaces(parent, args) {
-            const storageSpaces = await StorageSpace.find(args);
+
+            if (args.longitude && args.latitude) {
+                const targetLocation = {
+                    type: "Point",
+                    coordinates: [parseFloat(args.longitude), parseFloat(args.latitude)]
+                }
+                const storageSpaces = await StorageSpace.find({
+                    geoLocation: {
+                        $near: {
+                            $geometry: targetLocation
+                        }
+                    }
+                })
+                return storageSpaces
+            }
+
+            const storageSpaces = await StorageSpace.find({...args});
             return storageSpaces;
         }
     },

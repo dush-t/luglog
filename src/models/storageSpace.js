@@ -87,8 +87,23 @@ const storageSpaceSchema = new mongoose.Schema({
     },
     numOfBookings: {
         type: Number
+    },
+    geoLocation: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            required: true,
+            default: "Point"
+        },
+        coordinates: {
+            type: [Number],
+            required: true,
+            default: [0,0]
+        }
     }
 })
+
+storageSpaceSchema.index({ geoLocation: '2dsphere' })
 
 storageSpaceSchema.virtual('bookings', {
     ref: 'Booking',
