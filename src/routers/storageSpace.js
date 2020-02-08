@@ -138,8 +138,16 @@ router.get('/migrateStorageSpaces', auth, adminAccess, async (req, res) => {
 
 router.post('/addStoreImage/:space_id', async (req, res) => {
     const storageSpace = await StorageSpace.findById(req.params.space_id);
-    storageSpace.storeImages.push(req.body.imageurl.toString());
-    await storageSpace.save();
+    console.log(storageSpace)
+    const folderName = req.body.folderName;
+    const numOfImages = req.body.numOfImages
+    for (let i = 1; i <= parseInt(numOfImages); i++) {
+        const imageUrl = `/delhi-cloakrooms/${folderName}/${i}.jpg`
+        storageSpace.storeImages.push(imageUrl)
+        console.log(imageUrl)
+        await storageSpace.save();
+    }
+    console.log('saved')
     res.status(200).send(storageSpace);
 })
 
