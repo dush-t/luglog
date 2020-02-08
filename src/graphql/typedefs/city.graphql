@@ -1,0 +1,10 @@
+type City {
+    _id: String!
+    name: String
+    areas: [Area]
+}
+
+type Query {
+    city(_id: String): City
+    cities: [City]
+}

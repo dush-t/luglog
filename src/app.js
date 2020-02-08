@@ -1,5 +1,4 @@
 // index.js creates the express server and runs it.
-
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
@@ -75,6 +74,7 @@ const transactionRouter = require('./routers/transaction');
 const couponRouter = require('./routers/coupon');
 const loggingRouter = require('./routers/logging');
 const referralPartnerRouter = require('./routers/referralPartner');
+const utilRouter = require('./routers/util');
 
 
 // SETUP LOGGING MIDDLEWARE
@@ -109,6 +109,7 @@ app.use(imageRouter);
 app.use(transactionRouter);
 app.use(couponRouter);
 app.use(referralPartnerRouter);
+app.use(utilRouter);
 app.use(Sentry.Handlers.errorHandler());
 app.use(loggingRouter);
 
