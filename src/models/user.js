@@ -74,6 +74,9 @@ const userSchema = new mongoose.Schema({
     },
     hubspotVid: {
         type: Number
+    },
+    regToken: {
+        type: String
     }
 }, {
     timestamps: true

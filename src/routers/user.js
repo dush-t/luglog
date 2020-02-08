@@ -38,6 +38,10 @@ router.post('/users', async (req, res) => {
             uniqueId: generateUUID(req.body.mobile_number)
         });
 
+        if (req.body.regToken) {
+            user.regToken = req.body.fcm_token;
+        }
+
         await user.save();
         
         let response = {user: user}
