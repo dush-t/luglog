@@ -65,8 +65,6 @@ router.post('/users', async (req, res) => {
             // Create CRM entry
             try {
                 const {contact, deal} = await createHubspotContact(user);
-                // console.log(contact)
-                // console.log(deal)
                 user.hubspotVid = contact.vid;
                 customer.currentHubspotDealId = deal.dealId;
                 hubspotProfileURL = contact['profile-url'];
@@ -94,7 +92,7 @@ router.post('/users', async (req, res) => {
         res.status(201).send(response)
         
         // Post create jobs must be done after sending the user the response.
-        // sendWelcomeEmail(user.email, user.name);
+        sendWelcomeEmail(user.email, user.name);
         sendNewUserNotification(user, hubspotProfileURL)
 
     } catch (e) {
