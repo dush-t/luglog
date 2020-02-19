@@ -14,6 +14,7 @@ const { cashfreeModeTypes } = require('../constants/cashfreeModeTypes');
 
 const { generateCouponCode, generateCashfreeTransferId } = require('../utils/randomString');
 const { renewToken } = require('../utils/cashfree');
+const { getValueOrFallback } = require('../utils/helpers');
 
 
 
@@ -31,6 +32,24 @@ const referralSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true
+    },
+    couponTemplate: {
+        value: {
+            type: Number,
+            default: 25
+        },
+        constraints: {
+            type: String,
+            default: '{}'
+        },
+        title: {
+            type: String,
+            default: '25% Off!'
+        },
+        description: {
+            type: String,
+            default: 'Get FLAT 25% off on this booking!'
+        }
     }
 })
 
@@ -76,17 +95,7 @@ const handleCustomerToCustomerReferral = async (referral, user, booking) => {
     }
 
     const customer = await Customer.findOne({ user: user._id })
-    const coupon = new Coupon({
-        type: couponTypes.REFERRAL_DICSOUNT,
-        value: referralDiscountConstants.VALUE,
-        constraints: referralDiscountConstants.CONSTRAINTS,
-        title: referralDiscountConstants.TITLE,
-        description: referralDiscountConstants.DESCRIPTION,
-        code: generateCouponCode(),
-        relatedReferral: referral._id
-    })
-
-    await coupon.save();
+    const coupon = referral.generateCoupon();
     customer.coupons = customer.coupons.concat(coupon._id);
     await customer.save();
 
@@ -103,10 +112,10 @@ const handleCustomerToCustomerReferral = async (referral, user, booking) => {
 const generateDiscountCoupon = async (referral) => {
     const coupon = new Coupon({
         type: couponTypes.REFERRAL_DICSOUNT,
-        value: referralDiscountConstants.VALUE,
-        constraints: referralDiscountConstants.CONSTRAINTS,
-        title: referralDiscountConstants.TITLE,
-        description: referralDiscountConstants.DESCRIPTION,
+        value: referral.couponTemplate.value,
+        constraints: referral.couponTemplate.constraints,
+        title: referral.couponTemplate.title,
+        description: referral.couponTemplate.description,
         expiryTime: null,
         code: generateCouponCode(),
         relatedReferral: referral._id
@@ -121,7 +130,8 @@ referralSchema.methods.handle = async function(booking=null) {
     const user = await User.findById(this.user);
     switch (this.type) {
         case referralTypes.REF_PARTNER_TO_CUSTOMER: handleRefPartnerReferral(this, user, booking); break;
-        case referralSchema.CUSTOMER_TO_CUSTOMER: handleCustomerToCustomerReferral(this, user, booking); break;
+        case referralTypes.CUSTOMER_TO_CUSTOMER: handleCustomerToCustomerReferral(this, user, booking); break;
+        case referralTypes.REFERRAL_PARTNER_NON_PAYMENT: break;
     }
 }
 
@@ -130,6 +140,7 @@ referralSchema.methods.generateCoupon = async function() {
     switch (this.type) {
         case referralTypes.CUSTOMER_TO_CUSTOMER: return (await generateDiscountCoupon(this));
         case referralTypes.REF_PARTNER_TO_CUSTOMER: return (await generateDiscountCoupon(this));
+        case referralTypes.REFERRAL_PARTNER_NON_PAYMENT: return (await generateDiscountCoupon(this));
     }
 }
 
